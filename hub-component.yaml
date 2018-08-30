@@ -1,0 +1,78 @@
+---
+version: 1
+kind: component
+meta:
+  name: stack-k8s-eks
+  brief: AWS EKS
+  source:
+      dir: ../../stack-k8s-eks/
+
+requires:
+  - aws
+provides:
+  - kubernetes
+
+lifecycle:
+  verbs:
+    - deploy
+    - undeploy
+  readyConditions:
+    - dns: ${kubernetes.api.endpoint}
+      url: https://${kubernetes.api.endpoint}
+
+parameters:
+  - name: terraform.bucket.name
+    env: STATE_BUCKET
+  - name: terraform.bucket.region
+    env: STATE_REGION
+
+  - name: dns.domain
+    env: DOMAIN_NAME
+
+  - name: cloud.sshKey
+    env: TF_VAR_keypair
+
+  - name: component.kubernetes
+    parameters:
+
+    - name: eks
+      parameters:
+      - name: cluster
+        kind: user
+        env: TF_VAR_cluster_name
+      # if `availabilityZones` is set then we use that,
+      # else `nZones` number of zones are used from the list of available zones in current region
+      # must be at least 2
+      - name: nZones
+        value: 2
+        env: TF_VAR_n_zones
+      - name: availabilityZones
+        value: '[]'
+        env: TF_VAR_availability_zones
+      - name: admin
+        kind: user
+        env: TF_VAR_eks_admin
+
+    - name: worker
+      kind: user
+      parameters:
+      - name: count
+        env: TF_VAR_worker_count
+        default: 2
+      - name: size
+        env: TF_VAR_worker_instance_type
+        default: r4.large
+      - name: spotPrice
+        env: TF_VAR_worker_spot_price
+        empty: allow
+
+outputs:
+  - name: dns.domain
+  - name: kubernetes.eks.cluster
+    value: ${component.kubernetes.eks.cluster}
+  - name: kubernetes.flavor
+    value: eks
+  - name: kubernetes.api.endpoint
+    fromTfVar: api_endpoint
+  - name: kubernetes.api.caCert
+    fromTfVar: api_ca_crt
