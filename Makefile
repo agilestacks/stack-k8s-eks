@@ -8,7 +8,8 @@ STATE_REGION   ?= us-east-1
 export AWS_PROFILE        ?= default
 export AWS_DEFAULT_REGION ?= us-east-1
 export TF_LOG             ?= warn
-export TF_LOG_PATH        ?= .terraform/$(DOMAIN_NAME).log
+TF_DATA_DIR               := .terraform
+export TF_LOG_PATH        ?= $(TF_DATA_DIR)/$(DOMAIN_NAME).log
 export TF_OPTS            ?= -no-color
 export TF_UPDATE          ?= -update
 
@@ -22,7 +23,7 @@ TFPLAN ?= .terraform/$(DOMAIN_NAME).tfplan
 deploy: init plan apply iam
 
 init:
-	@mkdir -p .terraform
+	@mkdir -p $(TF_DATA_DIR)
 	$(terraform) init -get=true $(TF_CMD_OPTS) -reconfigure -force-copy  \
 		-backend=true -input=false \
 		-backend-config="bucket=$(STATE_BUCKET)" \
@@ -45,7 +46,7 @@ apply:
 .PHONY: apply
 
 iam:
-	$(kubectl) --kubeconfig=kubeconfig.$(DOMAIN_NAME) apply -f .terraform/$(DOMAIN_NAME)-aws-auth.yaml
+	$(kubectl) --kubeconfig=kubeconfig.$(DOMAIN_NAME) apply -f $(TF_DATA_DIR)/$(DOMAIN_NAME)-aws-auth.yaml
 .PHONY: iam
 
 undeploy: init destroy apply
