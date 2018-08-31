@@ -23,7 +23,7 @@ export TF_VAR_bucket       ?= files.$(DOMAIN_NAME)
 
 kubectl ?= kubectl
 terraform ?= terraform-v0.11
-TFPLAN ?= .terraform/$(DOMAIN_NAME).tfplan
+TFPLAN ?= $(TF_DATA_DIR)/$(DOMAIN_NAME).tfplan
 
 deploy: init plan apply iam output
 
