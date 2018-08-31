@@ -77,6 +77,17 @@ resource "aws_security_group_rule" "node_ingress_cluster" {
   type                     = "ingress"
 }
 
+resource "aws_security_group_rule" "node_ssh" {
+  cidr_blocks              = ["0.0.0.0/0"]
+  ipv6_cidr_blocks         = ["::/0"]
+  description              = "Allow node SSH access"
+  from_port                = 22
+  protocol                 = "tcp"
+  security_group_id        = "${aws_security_group.node.id}"
+  to_port                  = 22
+  type                     = "ingress"
+}
+
 # https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html
 # Region                            Amazon EKS-optimized AMI  with GPU support
 # US West (Oregon) (us-west-2)      ami-08cab282f9979fc7a     ami-0d20f2404b9a1c4d1
