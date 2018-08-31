@@ -68,11 +68,36 @@ parameters:
 
 outputs:
   - name: dns.domain
-  - name: kubernetes.eks.cluster
-    value: ${component.kubernetes.eks.cluster}
+  - name: dns.name
+    fromTfVar: dns_name
+  - name: dns.baseDomain
+    fromTfVar: dns_base_domain
+  - name: cloud.bucket
+    fromTfVar: s3_bucket
+
+  - name: cloud.region
+    fromTfVar: region
+  - name: cloud.availabilityZone
+    fromTfVar: zone
+  - name: cloud.availabilityZones
+    fromTfVar: zones
+
+  - name: cloud.vpc.id
+    fromTfVar: vpc
+  - name: cloud.vpc.cidr
+    fromTfVar: vpc_cidr_block
+  - name: cloud.vpc.worker.subnet.id
+    fromTfVar: worker_subnet_id
+  - name: cloud.vpc.worker.subnet.ids
+    fromTfVar: worker_subnet_ids
+  - name: cloud.vpc.worker.sg.id
+    fromTfVar: worker_sg_id
+
   - name: kubernetes.flavor
     value: eks
   - name: kubernetes.api.endpoint
     fromTfVar: api_endpoint
   - name: kubernetes.api.caCert
     fromTfVar: api_ca_crt
+  - name: kubernetes.eks.cluster
+    value: ${component.kubernetes.eks.cluster}

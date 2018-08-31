@@ -2,6 +2,8 @@
 
 COMPONENT_NAME ?= stack-k8s-eks
 DOMAIN_NAME    ?= eks-1.kubernetes.delivery
+NAME           := $(shell echo $(DOMAIN_NAME) | cut -d. -f1)
+BASE_DOMAIN    := $(shell echo $(DOMAIN_NAME) | cut -d. -f2-)
 STATE_BUCKET   ?= terraform.agilestacks.com
 STATE_REGION   ?= us-east-1
 
@@ -14,13 +16,16 @@ export TF_OPTS            ?= -no-color
 export TF_UPDATE          ?= -update
 
 export TF_VAR_domain_name  := $(DOMAIN_NAME)
-export TF_VAR_cluster_name ?= $(shell echo $(DOMAIN_NAME) | cut -d. -f1)
+export TF_VAR_name         := $(NAME)
+export TF_VAR_base_domain  := $(BASE_DOMAIN)
+export TF_VAR_cluster_name ?= $(NAME)
+export TF_VAR_bucket       ?= files.$(DOMAIN_NAME)
 
 kubectl ?= kubectl
 terraform ?= terraform-v0.11
 TFPLAN ?= .terraform/$(DOMAIN_NAME).tfplan
 
-deploy: init plan apply iam
+deploy: init plan apply iam output
 
 init:
 	@mkdir -p $(TF_DATA_DIR)
@@ -48,6 +53,14 @@ apply:
 iam:
 	$(kubectl) --kubeconfig=kubeconfig.$(DOMAIN_NAME) apply -f $(TF_DATA_DIR)/$(DOMAIN_NAME)-aws-auth.yaml
 .PHONY: iam
+
+output:
+	@echo
+	@echo Outputs:
+	@echo dns_name = $(NAME)
+	@echo dns_base_domain = $(BASE_DOMAIN)
+	@echo
+.PHONY: output
 
 undeploy: init destroy apply
 

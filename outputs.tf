@@ -33,6 +33,7 @@ clusters:
 contexts:
 - context:
     cluster: ${var.domain_name}
+    namespace: kube-system
     user: admin@${var.domain_name}
   name: ${var.domain_name}
 current-context: ${var.domain_name}
@@ -71,5 +72,45 @@ output "api_ca_crt" {
 }
 
 output "api_endpoint" {
-  value = "${replace(aws_eks_cluster.main.endpoint, "/https://([^/]+).*/", "$1")}"
+  value = "${local.api_endpoint}"
+}
+
+output "api_endpoint_cname" {
+  value = "${aws_route53_record.api.fqdn}"
+}
+
+output "s3_bucket" {
+  value = "${aws_s3_bucket.files.bucket}"
+}
+
+output "region" {
+  value = "${data.aws_region.current.name}"
+}
+
+output "zone" {
+  value = "${local.availability_zones[0]}"
+}
+
+output "zones" {
+  value = "${join(",", local.availability_zones)}"
+}
+
+output "vpc" {
+  value = "${aws_vpc.cluster.id}"
+}
+
+output "vpc_cidr_block" {
+  value = "${aws_vpc.cluster.cidr_block}"
+}
+
+output "worker_subnet_id" {
+  value = "${aws_subnet.nodes.0.id}"
+}
+
+output "worker_subnet_ids" {
+  value = "${join(",", aws_subnet.nodes.*.id)}"
+}
+
+output "worker_sg_id" {
+  value = "${aws_security_group.node.id}"
 }

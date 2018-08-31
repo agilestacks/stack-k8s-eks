@@ -1,6 +1,22 @@
 variable "domain_name" {
-  default = "eks-1.kubernetes.delivery"
-  type = "string"
+  description = "Desired DNS domain of the cluster"
+  default     = "eks-1.kubernetes.delivery"
+  type        = "string"
+}
+
+variable "name" {
+  description = "Desired DNS name of the cluster"
+  type        = "string"
+}
+
+variable "base_domain" {
+  description = "DNS base domain"
+  type        = "string"
+}
+
+variable "bucket" {
+  description = "S3 bucket name"
+  type        = "string"
 }
 
 variable "cluster_name" {

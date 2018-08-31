@@ -78,3 +78,8 @@ resource "aws_eks_cluster" "main" {
     "aws_iam_role_policy_attachment.cluster-AmazonEKSServicePolicy",
   ]
 }
+
+locals {
+  api_endpoint = "${replace(aws_eks_cluster.main.endpoint, "/https://([^/]+).*/", "$1")}"
+  api_endpoint_host = "${replace(local.api_endpoint, "/([^:]+).*/", "$1")}"
+}
