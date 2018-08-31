@@ -121,9 +121,9 @@ resource "aws_launch_configuration" "node" {
   spot_price                  = "${var.worker_spot_price}"
   user_data_base64            = "${base64encode(local.userdata)}"
 
-  # lifecycle {
-  #   create_before_destroy = true
-  # }
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_autoscaling_group" "nodes" {
