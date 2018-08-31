@@ -134,6 +134,8 @@ resource "aws_autoscaling_group" "nodes" {
   name                 = "eks-node-${local.name2}"
   vpc_zone_identifier  = ["${aws_subnet.nodes.*.id}"]
 
+  depends_on = ["aws_eks_cluster.main"]
+
   tag {
     key                 = "Name"
     value               = "eks-node-${local.name2}"
