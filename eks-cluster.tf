@@ -76,7 +76,13 @@ resource "aws_eks_cluster" "main" {
   depends_on = [
     "aws_iam_role_policy_attachment.cluster-AmazonEKSClusterPolicy",
     "aws_iam_role_policy_attachment.cluster-AmazonEKSServicePolicy",
+    "aws_security_group_rule.cluster-ingress-node-https",
+    "aws_security_group_rule.cluster-ingress-all-https",
   ]
+
+  timeouts {
+    create = "30m"
+  }
 }
 
 locals {
