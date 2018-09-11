@@ -64,6 +64,28 @@ variable "worker_spot_price" {
   type = "string"
 }
 
+variable "worker_root_volume_type" {
+  type        = "string"
+  default     = "gp2"
+  description = "The type of volume for the root block device of worker nodes."
+}
+
+variable "worker_root_volume_size" {
+  type        = "string"
+  default     = "30"
+  description = "The size of the volume in gigabytes for the root block device of worker nodes."
+}
+
+variable "worker_root_volume_iops" {
+  type    = "string"
+  default = "100"
+
+  description = <<EOF
+The amount of provisioned IOPS for the root block device of worker nodes.
+Ignored if the volume type is not io1.
+EOF
+}
+
 locals {
   name2 = "${replace("${var.domain_name}", ".", "-")}"
 }

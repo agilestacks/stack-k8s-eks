@@ -140,6 +140,13 @@ resource "aws_launch_configuration" "node" {
 
   lifecycle {
     create_before_destroy = true
+    # ignore_changes        = ["image_id"]
+  }
+
+  root_block_device {
+    volume_type = "${var.worker_root_volume_type}"
+    volume_size = "${var.worker_root_volume_size}"
+    iops        = "${var.worker_root_volume_type == "io1" ? var.worker_root_volume_iops : 0}"
   }
 }
 
