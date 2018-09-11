@@ -114,3 +114,7 @@ output "worker_subnet_ids" {
 output "worker_sg_id" {
   value = "${aws_security_group.node.id}"
 }
+
+output "worker_instance_profile" {
+  value = "${aws_iam_instance_profile.node.name}"
+}

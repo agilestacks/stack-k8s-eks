@@ -92,6 +92,8 @@ outputs:
     fromTfVar: worker_subnet_ids
   - name: cloud.vpc.worker.sg.id
     fromTfVar: worker_sg_id
+  - name: cloud.iam.worker.instanceProfile
+    fromTfVar: worker_instance_profile
 
   - name: kubernetes.flavor
     value: eks
