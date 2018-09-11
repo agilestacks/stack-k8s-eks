@@ -88,18 +88,35 @@ resource "aws_security_group_rule" "node_ssh" {
   type                     = "ingress"
 }
 
+locals {
+  gpu_instance_types = [
+    "p2.xlarge",
+    "p2.8xlarge",
+    "p2.16xlarge",
+    "p3.2xlarge",
+    "p3.8xlarge",
+    "p3.16xlarge",
+    "g3.4xlarge",
+    "g3.8xlarge",
+    "g3.16xlarge"
+  ]
+  worker_instance_gpu = "${contains(local.gpu_instance_types, var.worker_instance_type)}"
+}
+
 # https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html
+# GPU users must subscribe to https://aws.amazon.com/marketplace/pp?sku=58kec53jbhfbaqpgzivdyhdo9
 # Region                            Amazon EKS-optimized AMI  with GPU support
 # US West (Oregon) (us-west-2)      ami-08cab282f9979fc7a     ami-0d20f2404b9a1c4d1
 # US East (N. Virginia) (us-east-1) ami-0b2ae3c6bda8b5c06     ami-09fe6fc9106bda972
+# EU (Ireland) (eu-west-1)          ami-066110c1a7466949e     ami-09e0c6b3d3cf906f1
 data "aws_ami" "eks_worker" {
   filter {
     name   = "name"
-    values = ["amazon-eks-node-*"]
+    values = ["amazon-eks-node-*", "amazon-eks-gpu-node-*"]
   }
 
   most_recent = true
-  owners      = ["602401143452"] # Amazon
+  owners      = ["${local.worker_instance_gpu ? "679593333241" : "602401143452"}"] # Amazon
 }
 
 # https://amazon-eks.s3-us-west-2.amazonaws.com/cloudformation/2018-08-21/amazon-eks-nodegroup.yaml
