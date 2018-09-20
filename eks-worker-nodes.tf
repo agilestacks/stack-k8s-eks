@@ -106,9 +106,9 @@ locals {
 # https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html
 # GPU users must subscribe to https://aws.amazon.com/marketplace/pp?sku=58kec53jbhfbaqpgzivdyhdo9
 # Region                            Amazon EKS-optimized AMI  with GPU support
-# US West (Oregon) (us-west-2)      ami-08cab282f9979fc7a     ami-0d20f2404b9a1c4d1
-# US East (N. Virginia) (us-east-1) ami-0b2ae3c6bda8b5c06     ami-09fe6fc9106bda972
-# EU (Ireland) (eu-west-1)          ami-066110c1a7466949e     ami-09e0c6b3d3cf906f1
+# US West (Oregon     ) (us-west-2) ami-0a54c984b9f908c81     ami-0731694d53ef9604b
+# US East (N. Virginia) (us-east-1) ami-0440e4f6b9713faf6     ami-058bfb8c236caae89
+# EU (Ireland)          (eu-west-1) ami-0c7a4976cb6fafd3a     ami-0706dc8a5eed2eed9
 data "aws_ami" "eks_worker" {
   filter {
     name   = "name"
