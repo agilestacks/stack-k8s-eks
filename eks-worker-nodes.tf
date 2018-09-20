@@ -77,6 +77,16 @@ resource "aws_security_group_rule" "node_ingress_cluster" {
   type                     = "ingress"
 }
 
+resource "aws_security_group_rule" "node_ingress_cluster443" {
+  description              = "Allow pods running extension API servers on port 443 to receive communication from cluster control plane"
+  from_port                = 443
+  protocol                 = "tcp"
+  security_group_id        = "${aws_security_group.node.id}"
+  source_security_group_id = "${aws_security_group.cluster.id}"
+  to_port                  = 443
+  type                     = "ingress"
+}
+
 resource "aws_security_group_rule" "node_ssh" {
   cidr_blocks              = ["0.0.0.0/0"]
   ipv6_cidr_blocks         = ["::/0"]
