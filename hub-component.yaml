@@ -29,6 +29,8 @@ parameters:
   - name: dns.domain
     env: DOMAIN_NAME
 
+  - name: cloud.region
+    env: AWS_DEFAULT_REGION
   - name: cloud.sshKey
     env: TF_VAR_keypair
 
