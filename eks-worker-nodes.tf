@@ -55,6 +55,21 @@ resource "aws_security_group" "node" {
      "kubernetes.io/cluster/${var.cluster_name}", "owned",
     )
   }"
+
+  # This is a convenient place to destroy stray ENIs left by node's amazon-vpc-cni-k8s.
+  # We could piggyback on aws_launch_configuration.node instead, but EKS masters installs their own ENIs.
+  provisioner "local-exec" {
+    when       = "destroy"
+    on_failure = "continue"
+    command    = <<EOF
+export AWS_DEFAULT_REGION=${data.aws_region.current.name}
+aws ec2 describe-network-interfaces \
+        --filters Name=vpc-id,Values=${aws_vpc.cluster.id} \
+        --query 'NetworkInterfaces[*].NetworkInterfaceId' \
+        --output text \
+    | xargs -tn1 aws ec2 delete-network-interface --network-interface-id
+EOF
+  }
 }
 
 resource "aws_security_group_rule" "node_ingress_self" {
