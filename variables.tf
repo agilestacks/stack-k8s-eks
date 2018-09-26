@@ -45,8 +45,8 @@ variable "n_zones" {
 }
 
 variable "availability_zones" {
-  default = []
-  type = "list"
+  default = ""
+  type = "string"
 }
 
 variable "worker_instance_type" {

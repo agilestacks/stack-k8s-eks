@@ -10,14 +10,15 @@ resource "aws_vpc" "cluster" {
 }
 
 locals {
-  n_zones = "${length(var.availability_zones) > 0 ? length(var.availability_zones) : var.n_zones}"
+  custom_availability_zones = ["${split(",", var.availability_zones)}"]
+  n_zones = "${length(local.custom_availability_zones) > 0 ? length(local.custom_availability_zones) : var.n_zones}"
   # conditional operator cannot be used with list values
-  # availability_zones = "${length(var.availability_zones) > 0 ? var.availability_zones : data.aws_availability_zones.available.names}"
+  # availability_zones = "${length(local.custom_availability_zones) > 0 ? local.custom_availability_zones : data.aws_availability_zones.available.names}"
   availability_zones_set = {
-    custom = "${var.availability_zones}"
-    default = "${data.aws_availability_zones.available.names}"
+    custom = "${local.custom_availability_zones}"
+    available = "${data.aws_availability_zones.available.names}"
   }
-  availability_zones = "${local.availability_zones_set[length(var.availability_zones) > 0 ? "custom" : "default"]}"
+  availability_zones = "${local.availability_zones_set[length(local.custom_availability_zones) > 0 ? "custom" : "available"]}"
 }
 
 resource "aws_subnet" "nodes" {
