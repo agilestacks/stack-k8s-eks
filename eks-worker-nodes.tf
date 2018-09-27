@@ -129,6 +129,7 @@ locals {
 }
 
 # https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html
+# https://aws.amazon.com/blogs/opensource/improvements-eks-worker-node-provisioning/
 # GPU users must subscribe to https://aws.amazon.com/marketplace/pp?sku=58kec53jbhfbaqpgzivdyhdo9
 # Region                            Amazon EKS-optimized AMI  with GPU support
 # US West (Oregon     ) (us-west-2) ami-0a54c984b9f908c81     ami-0731694d53ef9604b
