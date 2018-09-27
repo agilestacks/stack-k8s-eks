@@ -64,7 +64,7 @@ resource "aws_security_group" "node" {
     command    = <<EOF
 export AWS_DEFAULT_REGION=${data.aws_region.current.name}
 aws ec2 describe-network-interfaces \
-        --filters Name=vpc-id,Values=${aws_vpc.cluster.id} \
+        --filters Name=vpc-id,Values=${aws_vpc.cluster.id} Name=status,Values=available \
         --query 'NetworkInterfaces[*].NetworkInterfaceId' \
         --output text \
     | xargs -tn1 aws ec2 delete-network-interface --network-interface-id
