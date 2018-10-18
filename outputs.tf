@@ -118,3 +118,11 @@ output "worker_sg_id" {
 output "worker_instance_profile" {
   value = "${aws_iam_instance_profile.node.name}"
 }
+
+output "worker_role" {
+  value = "${aws_iam_role.node.name}"
+}
+
+output "master_role" {
+  value = "${aws_iam_role.cluster.name}"
+}
