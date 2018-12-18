@@ -130,22 +130,25 @@ locals {
 
 # https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html
 # https://aws.amazon.com/blogs/opensource/improvements-eks-worker-node-provisioning/
-# GPU users must subscribe to https://aws.amazon.com/marketplace/pp?sku=58kec53jbhfbaqpgzivdyhdo9
-# Region                            Amazon EKS-optimized AMI  with GPU support
-# US West (Oregon     ) (us-west-2) ami-0a54c984b9f908c81     ami-0731694d53ef9604b
-# US East (N. Virginia) (us-east-1) ami-0440e4f6b9713faf6     ami-058bfb8c236caae89
-# EU (Ireland)          (eu-west-1) ami-0c7a4976cb6fafd3a     ami-0706dc8a5eed2eed9
+# GPU users must subscribe to https://aws.amazon.com/marketplace/pp/B07GRHFXGM
+# Kubernetes 1.11
+# Region                             Amazon EKS-optimized AMI  with GPU support
+# US West (Oregon)      (us-west-2)  ami-094fa4044a2a3cf52     ami-014f4e495a19d3e4f
+# US East (N. Virginia) (us-east-1)  ami-0b4eb1d8782fc3aea     ami-08a0bb74d1c9a5e2f
+# US East (Ohio)        (us-east-2)  ami-053cbe66e0033ebcf     ami-04a758678ae5ebad5
+# EU (Ireland)          (eu-west-1)  ami-0a9006fb385703b54     ami-050db3f5f9dbd4439
+# EU (Stockholm)        (eu-north-1) ami-082e6cf1c07e60241     ami-69b03e17
 data "aws_ami" "eks_worker" {
   filter {
     name   = "name"
-    values = ["amazon-eks-node-*", "amazon-eks-gpu-node-*"]
+    values = ["amazon-eks-node-1.11-*", "amazon-eks-gpu-node-1.11-*"]
   }
 
   most_recent = true
   owners      = ["${local.worker_instance_gpu ? "679593333241" : "602401143452"}"] # Amazon
 }
 
-# https://amazon-eks.s3-us-west-2.amazonaws.com/cloudformation/2018-08-21/amazon-eks-nodegroup.yaml
+# https://amazon-eks.s3-us-west-2.amazonaws.com/cloudformation/2018-12-10/amazon-eks-nodegroup.yaml
 locals {
   userdata = <<USERDATA
 #!/bin/sh
