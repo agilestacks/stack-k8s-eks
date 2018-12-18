@@ -20,11 +20,11 @@ export TF_VAR_base_domain  := $(BASE_DOMAIN)
 export TF_VAR_cluster_name ?= $(NAME)
 export TF_VAR_bucket       ?= files.$(DOMAIN_NAME)
 
-kubectl ?= kubectl
+kubectl ?= kubectl --kubeconfig=kubeconfig.$(DOMAIN_NAME)
 terraform ?= terraform-v0.11
 TFPLAN ?= $(TF_DATA_DIR)/$(DOMAIN_NAME).tfplan
 
-deploy: init plan apply iam output
+deploy: init plan apply iam automation-hub output
 
 init:
 	@mkdir -p $(TF_DATA_DIR)
@@ -50,8 +50,12 @@ apply:
 .PHONY: apply
 
 iam:
-	$(kubectl) --kubeconfig=kubeconfig.$(DOMAIN_NAME) apply -f $(TF_DATA_DIR)/$(DOMAIN_NAME)-aws-auth.yaml
+	$(kubectl) apply -f $(TF_DATA_DIR)/$(DOMAIN_NAME)-aws-auth.yaml
 .PHONY: iam
+
+automation-hub:
+	$(kubectl) apply -f automation-hub.yaml
+.PHONY: automation-hub
 
 output:
 	@echo
