@@ -2,8 +2,14 @@ data "aws_iam_user" "admin" {
   user_name = "${var.eks_admin}"
 }
 
-locals {
-  config_map_aws_auth = <<CONFIGMAPAWSAUTH
+resource "local_file" "ca_crt" {
+  content  = "${base64decode(aws_eks_cluster.main.certificate_authority.0.data)}"
+  filename = "${path.cwd}/.terraform/${var.domain_name}-ca.pem"
+}
+
+resource "local_file" "aws_auth" {
+  filename = "${path.cwd}/.terraform/${var.domain_name}-aws-auth.yaml"
+  content  = <<CONFIGMAPAWSAUTH
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -22,8 +28,11 @@ data:
       groups:
         - system:masters
 CONFIGMAPAWSAUTH
+}
 
-  kubeconfig = <<KUBECONFIG
+resource "local_file" "kubeconfig" {
+  filename = "${path.cwd}/kubeconfig.${var.domain_name}"
+  content  = <<KUBECONFIG
 apiVersion: v1
 clusters:
 - cluster:
@@ -50,21 +59,6 @@ users:
         - "-i"
         - "${var.cluster_name}"
 KUBECONFIG
-}
-
-resource "local_file" "ca_crt" {
-  content  = "${base64decode(aws_eks_cluster.main.certificate_authority.0.data)}"
-  filename = "${path.cwd}/.terraform/${var.domain_name}-ca.pem"
-}
-
-resource "local_file" "aws_auth" {
-  content  = "${local.config_map_aws_auth}"
-  filename = "${path.cwd}/.terraform/${var.domain_name}-aws-auth.yaml"
-}
-
-resource "local_file" "kubeconfig" {
-  content  = "${local.kubeconfig}"
-  filename = "${path.cwd}/kubeconfig.${var.domain_name}"
 }
 
 output "api_ca_crt" {
