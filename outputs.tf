@@ -4,11 +4,11 @@ data "aws_iam_user" "admin" {
 
 resource "local_file" "ca_crt" {
   content  = "${base64decode(aws_eks_cluster.main.certificate_authority.0.data)}"
-  filename = "${path.cwd}/.terraform/${var.domain_name}-ca.pem"
+  filename = "${path.cwd}/.terraform/${var.domain_name}/ca.pem"
 }
 
 resource "local_file" "aws_auth" {
-  filename = "${path.cwd}/.terraform/${var.domain_name}-aws-auth.yaml"
+  filename = "${path.cwd}/.terraform/${var.domain_name}/aws-auth.yaml"
   content  = <<CONFIGMAPAWSAUTH
 apiVersion: v1
 kind: ConfigMap
