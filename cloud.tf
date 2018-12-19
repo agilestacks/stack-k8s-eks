@@ -1,20 +1,3 @@
-# S3
-
-locals {
-  default_bucket = "files.${var.domain_name}"
-}
-
-resource "aws_s3_bucket" "files" {
-  bucket = "${coalesce(var.bucket, local.default_bucket)}"
-  acl = "private"
-  force_destroy = true
-  lifecycle {
-    ignore_changes = ["*"]
-  }
-}
-
-# DNS
-
 data "aws_route53_zone" "base" {
   name = "${var.base_domain}"
 }

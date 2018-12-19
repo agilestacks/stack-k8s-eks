@@ -18,7 +18,6 @@ export TF_VAR_domain_name  := $(DOMAIN_NAME)
 export TF_VAR_name         := $(NAME)
 export TF_VAR_base_domain  := $(BASE_DOMAIN)
 export TF_VAR_cluster_name ?= $(NAME)
-export TF_VAR_bucket       ?= files.$(DOMAIN_NAME)
 
 NAME2 := $(shell echo $(DOMAIN_NAME) | sed -E -e 's/[^[:alnum:]]+/-/g')
 

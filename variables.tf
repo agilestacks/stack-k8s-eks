@@ -14,11 +14,6 @@ variable "base_domain" {
   type        = "string"
 }
 
-variable "bucket" {
-  description = "S3 bucket name"
-  type        = "string"
-}
-
 variable "cluster_name" {
   default = "eks-1"
   type = "string"

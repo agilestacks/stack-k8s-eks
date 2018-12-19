@@ -73,10 +73,6 @@ output "api_endpoint_cname" {
   value = "${aws_route53_record.api.fqdn}"
 }
 
-output "s3_bucket" {
-  value = "${aws_s3_bucket.files.bucket}"
-}
-
 output "region" {
   value = "${data.aws_region.current.name}"
 }
