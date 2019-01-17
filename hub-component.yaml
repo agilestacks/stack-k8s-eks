@@ -105,5 +105,6 @@ outputs:
     fromTfVar: api_endpoint
   - name: kubernetes.api.caCert
     fromTfVar: api_ca_crt
+    kind: secret/certificate
   - name: kubernetes.eks.cluster
     value: ${component.kubernetes.eks.cluster}
