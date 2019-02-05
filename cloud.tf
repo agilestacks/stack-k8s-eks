@@ -16,8 +16,10 @@ resource "aws_route53_record" "parent" {
 }
 
 resource "aws_route53_zone" "internal" {
-  name          = "i.${var.name}.${data.aws_route53_zone.base.name}"
-  vpc_id        = "${aws_vpc.cluster.id}"
+  name = "i.${var.name}.${data.aws_route53_zone.base.name}"
+  vpc {
+    vpc_id = "${aws_vpc.cluster.id}"
+  }
   force_destroy = true
 }
 
