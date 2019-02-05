@@ -7,6 +7,10 @@ provider "aws" {
   version = "1.57.0"
 }
 
+provider "local" {
+  version = "1.1"
+}
+
 data "aws_region" "current" {}
 
 data "aws_availability_zones" "available" {}

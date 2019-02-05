@@ -45,7 +45,7 @@ variable "availability_zones" {
 }
 
 variable "worker_instance_type" {
-  default = "r4.large"
+  default = "r5.large"
   type = "string"
 }
 

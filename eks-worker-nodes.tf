@@ -132,12 +132,17 @@ locals {
 # https://aws.amazon.com/blogs/opensource/improvements-eks-worker-node-provisioning/
 # GPU users must subscribe to https://aws.amazon.com/marketplace/pp/B07GRHFXGM
 # Kubernetes 1.11
-# Region                             Amazon EKS-optimized AMI  with GPU support
-# US West (Oregon)      (us-west-2)  ami-094fa4044a2a3cf52     ami-014f4e495a19d3e4f
-# US East (N. Virginia) (us-east-1)  ami-0b4eb1d8782fc3aea     ami-08a0bb74d1c9a5e2f
-# US East (Ohio)        (us-east-2)  ami-053cbe66e0033ebcf     ami-04a758678ae5ebad5
-# EU (Ireland)          (eu-west-1)  ami-0a9006fb385703b54     ami-050db3f5f9dbd4439
-# EU (Stockholm)        (eu-north-1) ami-082e6cf1c07e60241     ami-69b03e17
+# Region                                    Amazon EKS-optimized AMI  with GPU support
+# US West (Oregon) (us-west-2)              ami-0a2abab4107669c1b     ami-0c9e5e2d8caa9fb5e
+# US East (N. Virginia) (us-east-1)         ami-0c24db5df6badc35a     ami-0ff0241c02b279f50
+# US East (Ohio) (us-east-2)                ami-0c2e8d28b1f854c68     ami-006a12f54eaafc2b1
+# EU (Frankfurt) (eu-central-1)             ami-010caa98bae9a09e2     ami-0d6f0554fd4743a9d
+# EU (Stockholm) (eu-north-1)               ami-06ee67302ab7cf838     ami-0b159b75
+# EU (Ireland) (eu-west-1)                  ami-01e08d22b9439c15a     ami-097978e7acde1fd7c
+# Asia Pacific (Tokyo) (ap-northeast-1)     ami-0f0e8066383e7a2cb     ami-036b3969c5eb8d3cf
+# Asia Pacific (Seoul) (ap-northeast-2)     ami-0b7baa90de70f683f     ami-0b7f163f7194396f7
+# Asia Pacific (Singapore) (ap-southeast-1) ami-019966ed970c18502     ami-093f742654a955ee6
+# Asia Pacific (Sydney) (ap-southeast-2)    ami-06ade0abbd8eca425     ami-05e09575123ff498b
 data "aws_ami" "eks_worker" {
   filter {
     name   = "name"

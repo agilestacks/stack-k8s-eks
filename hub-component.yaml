@@ -63,7 +63,7 @@ parameters:
         default: 2
       - name: size
         env: TF_VAR_worker_instance_type
-        default: r4.large
+        default: r5.large
       - name: spotPrice
         env: TF_VAR_worker_spot_price
         empty: allow
