@@ -32,7 +32,7 @@ terraform   ?= terraform-v0.11
 TF_CLI_ARGS ?= -no-color -input=false
 TFPLAN      := $(TF_DATA_DIR)/$(DOMAIN_NAME).tfplan
 
-deploy: init import plan apply iam automation-hub output
+deploy: init import plan apply iam output
 
 init:
 	@mkdir -p $(TF_DATA_DIR)
@@ -56,10 +56,6 @@ apply:
 iam:
 	$(kubectl) apply -f $(TF_DATA_DIR)/aws-auth.yaml
 .PHONY: iam
-
-automation-hub:
-	$(kubectl) apply -f automation-hub.yaml
-.PHONY: automation-hub
 
 output:
 	@echo
