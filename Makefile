@@ -32,7 +32,7 @@ terraform   ?= terraform-v0.11
 TF_CLI_ARGS ?= -no-color -input=false
 TFPLAN      := $(TF_DATA_DIR)/$(DOMAIN_NAME).tfplan
 
-deploy: init import plan apply iam storage output
+deploy: init import plan apply iam gpu storage output
 
 init:
 	@mkdir -p $(TF_DATA_DIR)
@@ -56,6 +56,11 @@ apply:
 iam:
 	$(kubectl) apply -f $(TF_DATA_DIR)/aws-auth.yaml
 .PHONY: iam
+
+# https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/v1.12/nvidia-device-plugin.yml
+gpu:
+	$(kubectl) apply -f nvidia-device-plugin.yaml
+.PHONY: gpu
 
 storage:
 	$(kubectl) apply -f storage-class.yaml
