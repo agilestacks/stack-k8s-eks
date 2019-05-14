@@ -1,14 +1,14 @@
 terraform {
-  required_version = ">= 0.11.3"
+  required_version = ">= 0.11.10"
   backend "s3" {}
 }
 
 provider "aws" {
-  version = "1.60.0"
+  version = "2.10.0"
 }
 
 provider "local" {
-  version = "1.1"
+  version = "1.2.2"
 }
 
 data "aws_region" "current" {}
