@@ -125,7 +125,7 @@ locals {
     "g3s.xlarge",
     "g3.4xlarge",
     "g3.8xlarge",
-    "g3.16xlarge"
+    "g3.16xlarge",
   ]
   worker_instance_gpu = "${contains(local.gpu_instance_types, var.worker_instance_type)}"
 }
@@ -150,11 +150,11 @@ locals {
 data "aws_ami" "eks_worker" {
   filter {
     name   = "name"
-    values = ["amazon-eks-node-1.13-*", "amazon-eks-gpu-node-1.13-*"]
+    values = ["amazon-eks-${local.worker_instance_gpu ? "gpu-" : ""}node-${local.version}-*"]
   }
 
   most_recent = true
-  owners      = ["602401143452"] # Amazon
+  owners      = ["amazon"]
 }
 
 # https://amazon-eks.s3-us-west-2.amazonaws.com/cloudformation/2019-02-11/amazon-eks-nodegroup.yaml

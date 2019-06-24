@@ -68,7 +68,7 @@ resource "aws_security_group_rule" "cluster-ingress-all-https" {
 
 resource "aws_eks_cluster" "main" {
   name     = "${var.cluster_name}"
-  version  = "1.13"
+  version  = "${local.version}"
   role_arn = "${aws_iam_role.cluster.arn}"
 
   vpc_config {
@@ -89,6 +89,7 @@ resource "aws_eks_cluster" "main" {
 }
 
 locals {
+  version = "1.13"
   api_endpoint = "${replace(aws_eks_cluster.main.endpoint, "/https://([^/]+).*/", "$1")}"
   api_endpoint_host = "${replace(local.api_endpoint, "/([^:]+).*/", "$1")}"
 }
