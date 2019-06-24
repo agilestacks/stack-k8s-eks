@@ -5,7 +5,7 @@ meta:
   name: stack-k8s-eks
   brief: AWS EKS
   source:
-      dir: ../../stack-k8s-eks/
+      dir: ../stack-k8s-eks/
 
 requires:
   - aws

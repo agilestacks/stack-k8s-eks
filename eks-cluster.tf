@@ -1,3 +1,5 @@
+# https://amazon-eks.s3-us-west-2.amazonaws.com/cloudformation/2019-02-11/amazon-eks-vpc-sample.yaml
+
 resource "aws_iam_role" "cluster" {
   name = "eks-cluster-${local.name2}"
 
@@ -66,6 +68,7 @@ resource "aws_security_group_rule" "cluster-ingress-all-https" {
 
 resource "aws_eks_cluster" "main" {
   name     = "${var.cluster_name}"
+  version  = "1.13"
   role_arn = "${aws_iam_role.cluster.arn}"
 
   vpc_config {
