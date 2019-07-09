@@ -31,6 +31,9 @@ parameters:
 
   - name: cloud.region
     env: AWS_DEFAULT_REGION
+  - name: cloud.availabilityZones
+    empty: allow
+    env: TF_VAR_availability_zones
   - name: cloud.sshKey
     env: TF_VAR_keypair
 
@@ -48,9 +51,6 @@ parameters:
       - name: nZones
         value: 2
         env: TF_VAR_n_zones
-      - name: availabilityZones
-        empty: allow
-        env: TF_VAR_availability_zones
       - name: admin
         kind: user
         env: TF_VAR_eks_admin
