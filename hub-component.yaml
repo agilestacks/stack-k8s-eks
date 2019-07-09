@@ -31,6 +31,9 @@ parameters:
 
   - name: cloud.region
     env: AWS_DEFAULT_REGION
+  - name: cloud.availabilityZone
+    empty: allow
+    env: TF_VAR_availability_zone
   - name: cloud.availabilityZones
     empty: allow
     env: TF_VAR_availability_zones

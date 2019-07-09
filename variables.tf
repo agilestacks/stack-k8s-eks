@@ -39,6 +39,12 @@ variable "n_zones" {
   type = "string"
 }
 
+variable "availability_zone" {
+  default = ""
+  type = "string"
+}
+
+
 variable "availability_zones" {
   default = ""
   type = "string"
