@@ -16,7 +16,7 @@ locals {
   # availability_zones = "${length(local.custom_availability_zones) > 0 ? local.custom_availability_zones : data.aws_availability_zones.available.names}"
   availability_zones_set = {
     custom = "${local.custom_availability_zones}"
-    available = "${distinct(compact(concat(list(var.availability_zone), data.aws_availability_zones.available.names)))}"
+    available = "${slice(distinct(compact(concat(list(var.availability_zone), data.aws_availability_zones.available.names))), 0, local.n_zones)}"
   }
   availability_zones = "${local.availability_zones_set[length(local.custom_availability_zones) > 1 ? "custom" : "available"]}"
 }
