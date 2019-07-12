@@ -4,7 +4,7 @@ COMPONENT_NAME ?= stack-k8s-eks
 DOMAIN_NAME    ?= eks-1.dev.superhub.io
 NAME           := $(shell echo $(DOMAIN_NAME) | cut -d. -f1)
 BASE_DOMAIN    := $(shell echo $(DOMAIN_NAME) | cut -d. -f2-)
-NAME2          := $(shell echo $(DOMAIN_NAME) | sed -E -e 's/[^[:alnum:]]+/-/g')
+NAME2          := $(shell echo $(DOMAIN_NAME) | sed -E -e 's/[^[:alnum:]]+/-/g' | cut -c1-100)
 
 STATE_BUCKET   ?= terraform.agilestacks.com
 STATE_REGION   ?= us-east-1
