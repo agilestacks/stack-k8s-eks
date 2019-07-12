@@ -46,8 +46,8 @@ parameters:
     - name: eks
       parameters:
       - name: cluster
-        kind: user
-        env: TF_VAR_cluster_name
+        empty: allow
+        env: CLUSTER_NAME
       # if `availabilityZones` is set then we use that, for example 'us-east-1a,us-east-1b'
       # else `nZones` number of zones are used from the list of available zones in current region
       # must be at least 2
@@ -110,4 +110,4 @@ outputs:
     fromTfVar: api_ca_crt
     kind: secret/certificate
   - name: kubernetes.eks.cluster
-    value: ${component.kubernetes.eks.cluster}
+    fromTfVar: cluster_name

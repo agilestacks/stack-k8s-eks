@@ -4,6 +4,7 @@ COMPONENT_NAME ?= stack-k8s-eks
 DOMAIN_NAME    ?= eks-1.dev.superhub.io
 NAME           := $(shell echo $(DOMAIN_NAME) | cut -d. -f1)
 BASE_DOMAIN    := $(shell echo $(DOMAIN_NAME) | cut -d. -f2-)
+NAME2          := $(shell echo $(DOMAIN_NAME) | sed -E -e 's/[^[:alnum:]]+/-/g')
 
 STATE_BUCKET   ?= terraform.agilestacks.com
 STATE_REGION   ?= us-east-1
@@ -17,15 +18,13 @@ export TF_LOG_PATH ?= $(TF_DATA_DIR)/terraform.log
 export TF_VAR_domain_name  := $(DOMAIN_NAME)
 export TF_VAR_name         := $(NAME)
 export TF_VAR_base_domain  := $(BASE_DOMAIN)
-export TF_VAR_cluster_name ?= $(NAME)
+export TF_VAR_cluster_name ?= $(or $(CLUSTER_NAME),$(NAME2))
 export TF_VAR_keypair      ?= agilestacks
 export TF_VAR_n_zones      ?= 2
 export TF_VAR_eks_admin    ?= $(USER)
 export TF_VAR_worker_count         ?= 2
 export TF_VAR_worker_instance_type ?= r5.large
 export TF_VAR_worker_spot_price    ?= 0.06
-
-NAME2 := $(shell echo $(DOMAIN_NAME) | sed -E -e 's/[^[:alnum:]]+/-/g')
 
 kubectl     ?= kubectl --kubeconfig=kubeconfig.$(DOMAIN_NAME)
 terraform   ?= terraform-v0.11
@@ -71,6 +70,7 @@ output:
 	@echo Outputs:
 	@echo dns_name = $(NAME)
 	@echo dns_base_domain = $(BASE_DOMAIN)
+	@echo cluster_name = $(TF_VAR_cluster_name)
 	@echo
 .PHONY: output
 
