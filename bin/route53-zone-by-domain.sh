@@ -9,7 +9,7 @@ JQ="${JQ:-jq}"
 DOMAIN="$1"
 if test -z "$DOMAIN"; then echo "Usage: $0 <domain.name>"; exit 1; fi
 
-route53_zones_resp=$($AWS route53 list-hosted-zones-by-name --dns-name "$DOMAIN" --max-items 1)
+route53_zones_resp=$($AWS --output=json route53 list-hosted-zones-by-name --dns-name "$DOMAIN" --max-items 1)
 zone=$($JQ .HostedZones[0] <<< $route53_zones_resp)
 test -z "$zone" -o "$zone" = "null" && exit 0
 
