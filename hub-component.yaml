@@ -19,6 +19,9 @@ lifecycle:
   readyConditions:
     - dns: ${kubernetes.api.endpoint}
       url: https://${kubernetes.api.endpoint}
+  options:
+    random:
+      bytes: 1536
 
 parameters:
   - name: terraform.bucket.name
@@ -109,5 +112,8 @@ outputs:
   - name: kubernetes.api.caCert
     fromTfVar: api_ca_crt
     kind: secret/certificate
+  - name: kubernetes.api.token
+    fromTfVar: token/base64
+    kind: secret/token
   - name: kubernetes.eks.cluster
     fromTfVar: cluster_name

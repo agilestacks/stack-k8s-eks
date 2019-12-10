@@ -6,8 +6,10 @@ NAME           := $(shell echo $(DOMAIN_NAME) | cut -d. -f1)
 BASE_DOMAIN    := $(shell echo $(DOMAIN_NAME) | cut -d. -f2-)
 NAME2          := $(shell echo $(DOMAIN_NAME) | sed -E -e 's/[^[:alnum:]]+/-/g' | cut -c1-100)
 
-STATE_BUCKET   ?= terraform.agilestacks.com
-STATE_REGION   ?= us-east-1
+STATE_BUCKET ?= terraform.agilestacks.com
+STATE_REGION ?= us-east-1
+
+SERVICE_ACCOUNT ?= asi
 
 export AWS_DEFAULT_REGION ?= us-east-2
 
@@ -31,7 +33,7 @@ terraform   ?= terraform-v0.11
 TF_CLI_ARGS ?= -no-color -input=false
 TFPLAN      := $(TF_DATA_DIR)/$(DOMAIN_NAME).tfplan
 
-deploy: init import plan apply iam gpu storage output
+deploy: init import plan apply iam gpu createsa storage token output
 
 init:
 	@mkdir -p $(TF_DATA_DIR)
@@ -61,9 +63,24 @@ gpu:
 	$(kubectl) apply -f nvidia-device-plugin.yaml
 .PHONY: gpu
 
+createsa:
+	$(kubectl) -n default get serviceaccount $(SERVICE_ACCOUNT) || \
+		($(kubectl) -n default create serviceaccount $(SERVICE_ACCOUNT) && sleep 17)
+	$(kubectl) get clusterrolebinding $(SERVICE_ACCOUNT)-cluster-admin-binding || \
+		($(kubectl) create clusterrolebinding $(SERVICE_ACCOUNT)-cluster-admin-binding \
+			--clusterrole=cluster-admin --serviceaccount=default:$(SERVICE_ACCOUNT) && sleep 7)
+.PHONY: createsa
+
 storage:
 	$(kubectl) apply -f storage-class.yaml
 .PHONY: storage
+
+token:
+	$(eval SECRET:=$(shell $(kubectl) -n default get serviceaccount $(SERVICE_ACCOUNT) -o json | \
+		jq -r '.secrets[] | select(.name | contains("token")).name'))
+	$(eval TOKEN:=$(shell $(kubectl) -n default get secret $(SECRET) -o json | \
+		jq -r '.data.token'))
+.PHONY: token
 
 output:
 	@echo
@@ -71,6 +88,7 @@ output:
 	@echo dns_name = $(NAME)
 	@echo dns_base_domain = $(BASE_DOMAIN)
 	@echo cluster_name = $(TF_VAR_cluster_name)
+	@echo token = $(TOKEN) | $(HUB) util otp
 	@echo
 .PHONY: output
 
