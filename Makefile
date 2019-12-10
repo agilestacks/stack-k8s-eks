@@ -58,7 +58,7 @@ iam:
 	$(kubectl) apply -f $(TF_DATA_DIR)/aws-auth.yaml
 .PHONY: iam
 
-# https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/v1.12/nvidia-device-plugin.yml
+# https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/1.0.0-beta4/nvidia-device-plugin.yml
 gpu:
 	$(kubectl) apply -f nvidia-device-plugin.yaml
 .PHONY: gpu
