@@ -112,7 +112,3 @@ output "worker_instance_profile" {
 output "worker_role" {
   value = "${aws_iam_role.node.name}"
 }
-
-output "master_role" {
-  value = "${aws_iam_role.cluster.name}"
-}

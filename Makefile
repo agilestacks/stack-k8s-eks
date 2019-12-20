@@ -33,10 +33,13 @@ terraform   ?= terraform-v0.11
 TF_CLI_ARGS ?= -no-color -input=false
 TFPLAN      := $(TF_DATA_DIR)/$(DOMAIN_NAME).tfplan
 
+WORKER_IMPL := $(if $(TF_VAR_worker_spot_price),autoscaling,nodegroup)
+
 deploy: init import plan apply iam gpu createsa storage token output
 
 init:
 	@mkdir -p $(TF_DATA_DIR)
+	@cp -v eks-worker-$(WORKER_IMPL).tf.ignore eks-worker.tf
 	$(terraform) init -get=true $(TF_CLI_ARGS) -reconfigure -force-copy  \
 		-backend=true -input=false \
 		-backend-config="bucket=$(STATE_BUCKET)" \

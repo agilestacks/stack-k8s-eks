@@ -102,8 +102,6 @@ outputs:
     fromTfVar: worker_instance_profile
   - name: cloud.role.worker
     fromTfVar: worker_role
-  - name: cloud.role.master
-    fromTfVar: master_role
 
   - name: kubernetes.flavor
     value: eks

@@ -2,3 +2,4 @@
 .terraform*
 terraform.tfstate*
 kubeconfig.*
+/eks-worker.tf
