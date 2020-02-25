@@ -8,7 +8,7 @@ resource "aws_eks_node_group" "nodes" {
   scaling_config {
     desired_size = "${var.worker_count}"
     min_size     = 1
-    max_size     = 128
+    max_size     = 100
   }
 
   ami_type       = "AL2_x86_64${local.worker_instance_gpu ? "_GPU" : ""}"
