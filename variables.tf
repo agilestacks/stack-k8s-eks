@@ -60,6 +60,11 @@ variable "worker_count" {
   type = "string"
 }
 
+variable "worker_max_count" {
+  default = "2"
+  type = "string"
+}
+
 variable "worker_spot_price" {
   default = ""
   type = "string"

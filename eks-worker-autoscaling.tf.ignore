@@ -48,7 +48,7 @@ resource "aws_autoscaling_group" "nodes" {
   launch_configuration = "${aws_launch_configuration.node.id}"
   desired_capacity     = "${var.worker_count}"
   min_size             = 1
-  max_size             = 128
+  max_size             = "${var.worker_max_count}"
 
   depends_on = ["aws_eks_cluster.main"]
 

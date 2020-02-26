@@ -67,12 +67,18 @@ parameters:
       - name: count
         env: TF_VAR_worker_count
         default: 2
+      - name: maxCount
+        value: ${component.kubernetes.worker.count}
+        env: TF_VAR_worker_max_count
       - name: size
         env: TF_VAR_worker_instance_type
         default: r5.large
       - name: spotPrice
         env: TF_VAR_worker_spot_price
         empty: allow
+      - name: volume.size
+        env: TF_VAR_worker_root_volume_size
+        value: 30
 
 outputs:
   - name: dns.domain
