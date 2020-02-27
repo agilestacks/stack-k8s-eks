@@ -1,4 +1,4 @@
-# https://amazon-eks.s3-us-west-2.amazonaws.com/cloudformation/2019-02-11/amazon-eks-vpc-sample.yaml
+# https://amazon-eks.s3-us-west-2.amazonaws.com/cloudformation/2019-11-15/amazon-eks-vpc-sample.yaml
 
 resource "aws_iam_role" "cluster" {
   name = "eks-cluster-${local.name2}"
