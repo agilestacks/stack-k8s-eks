@@ -126,6 +126,13 @@ locals {
     "g3.4xlarge",
     "g3.8xlarge",
     "g3.16xlarge",
+    "g4dn.xlarge",
+    "g4dn.2xlarge",
+    "g4dn.4xlarge",
+    "g4dn.8xlarge",
+    "g4dn.16xlarge",
+    "g4dn.12xlarge",
+    "g4dn.metal",
   ]
   worker_instance_gpu = "${contains(local.gpu_instance_types, var.worker_instance_type)}"
 }
