@@ -77,7 +77,7 @@ variable "worker_root_volume_type" {
 
 variable "worker_root_volume_size" {
   type        = string
-  default     = "30"
+  default     = "50"
   description = "The size of the volume in gigabytes for the root block device of worker nodes."
 }
 

@@ -78,7 +78,7 @@ parameters:
         empty: allow
       - name: volume.size
         env: TF_VAR_worker_root_volume_size
-        value: 30
+        value: 50
 
 outputs:
   - name: dns.domain
