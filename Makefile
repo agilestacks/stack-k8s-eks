@@ -13,7 +13,6 @@ SERVICE_ACCOUNT ?= asi
 
 export AWS_DEFAULT_REGION ?= us-east-2
 
-export TF_LOG      ?= info
 export TF_DATA_DIR ?= .terraform/$(DOMAIN_NAME)
 export TF_LOG_PATH ?= $(TF_DATA_DIR)/terraform.log
 
@@ -29,8 +28,8 @@ export TF_VAR_worker_instance_type ?= r5.large
 export TF_VAR_worker_spot_price    ?= 0.06
 
 kubectl     ?= kubectl --kubeconfig=kubeconfig.$(DOMAIN_NAME)
-terraform   ?= terraform-v0.11
-TF_CLI_ARGS ?= -no-color -input=false
+terraform   ?= terraform-v0.12
+TF_CLI_ARGS ?= -input=false
 TFPLAN      := $(TF_DATA_DIR)/$(DOMAIN_NAME).tfplan
 
 WORKER_IMPL := $(if $(TF_VAR_worker_spot_price),autoscaling,nodegroup)
@@ -49,7 +48,7 @@ init:
 .PHONY: init
 
 plan:
-	$(terraform) plan $(TF_CLI_ARGS) -refresh=true -module-depth=-1 -out=$(TFPLAN)
+	$(terraform) plan $(TF_CLI_ARGS) -out=$(TFPLAN)
 .PHONY: plan
 
 apply:
@@ -58,6 +57,7 @@ apply:
 .PHONY: apply
 
 iam:
+    # Warning: kubectl apply should be used... below is ok
 	$(kubectl) apply -f $(TF_DATA_DIR)/aws-auth.yaml
 .PHONY: iam
 

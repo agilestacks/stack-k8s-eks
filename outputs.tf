@@ -1,9 +1,9 @@
 data "aws_iam_user" "admin" {
-  user_name = "${var.eks_admin}"
+  user_name = var.eks_admin
 }
 
 resource "local_file" "ca_crt" {
-  content  = "${base64decode(aws_eks_cluster.main.certificate_authority.0.data)}"
+  content  = base64decode(aws_eks_cluster.main.certificate_authority[0].data)
   filename = "${path.cwd}/.terraform/${var.domain_name}/ca.pem"
 }
 
@@ -28,6 +28,7 @@ data:
       groups:
         - system:masters
 CONFIGMAPAWSAUTH
+
 }
 
 resource "local_file" "kubeconfig" {
@@ -37,7 +38,7 @@ apiVersion: v1
 clusters:
 - cluster:
     server: ${aws_eks_cluster.main.endpoint}
-    certificate-authority-data: ${aws_eks_cluster.main.certificate_authority.0.data}
+    certificate-authority-data: ${aws_eks_cluster.main.certificate_authority[0].data}
   name: ${var.domain_name}
 contexts:
 - context:
@@ -59,6 +60,7 @@ users:
         - "-i"
         - "${var.cluster_name}"
 KUBECONFIG
+
 }
 
 output "api_ca_crt" {
@@ -66,49 +68,49 @@ output "api_ca_crt" {
 }
 
 output "api_endpoint" {
-  value = "${local.api_endpoint}"
+  value = local.api_endpoint
 }
 
 output "api_endpoint_cname" {
-  value = "${aws_route53_record.api.fqdn}"
+  value = aws_route53_record.api.fqdn
 }
 
 output "region" {
-  value = "${data.aws_region.current.name}"
+  value = data.aws_region.current.name
 }
 
 output "zone" {
-  value = "${local.availability_zones[0]}"
+  value = local.availability_zones[0]
 }
 
 output "zones" {
-  value = "${join(",", local.availability_zones)}"
+  value = join(",", local.availability_zones)
 }
 
 output "vpc" {
-  value = "${aws_vpc.cluster.id}"
+  value = aws_vpc.cluster.id
 }
 
 output "vpc_cidr_block" {
-  value = "${aws_vpc.cluster.cidr_block}"
+  value = aws_vpc.cluster.cidr_block
 }
 
 output "worker_subnet_id" {
-  value = "${aws_subnet.nodes.0.id}"
+  value = aws_subnet.nodes[0].id
 }
 
 output "worker_subnet_ids" {
-  value = "${join(",", aws_subnet.nodes.*.id)}"
+  value = join(",", aws_subnet.nodes.*.id)
 }
 
 output "worker_sg_id" {
-  value = "${aws_security_group.node.id}"
+  value = aws_security_group.node.id
 }
 
 output "worker_instance_profile" {
-  value = "${aws_iam_instance_profile.node.name}"
+  value = aws_iam_instance_profile.node.name
 }
 
 output "worker_role" {
-  value = "${aws_iam_role.node.name}"
+  value = aws_iam_role.node.name
 }

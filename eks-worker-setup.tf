@@ -15,34 +15,35 @@ resource "aws_iam_role" "node" {
   ]
 }
 POLICY
+
 }
 
 # https://amazon-eks.s3-us-west-2.amazonaws.com/cloudformation/2019-11-15/amazon-eks-nodegroup-role.yaml
 
 resource "aws_iam_role_policy_attachment" "node-AmazonEKSWorkerNodePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-  role       = "${aws_iam_role.node.name}"
+  role       = aws_iam_role.node.name
 }
 
 resource "aws_iam_role_policy_attachment" "node-AmazonEKS_CNI_Policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-  role       = "${aws_iam_role.node.name}"
+  role       = aws_iam_role.node.name
 }
 
 resource "aws_iam_role_policy_attachment" "node-AmazonEC2ContainerRegistryReadOnly" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = "${aws_iam_role.node.name}"
+  role       = aws_iam_role.node.name
 }
 
 resource "aws_iam_instance_profile" "node" {
   name = "eks-node-${local.name2}"
-  role = "${aws_iam_role.node.name}"
+  role = aws_iam_role.node.name
 }
 
 resource "aws_security_group" "node" {
   name        = "eks-node-${local.name2}"
   description = "Security group for all nodes in the cluster"
-  vpc_id      = "${aws_vpc.cluster.id}"
+  vpc_id      = aws_vpc.cluster.id
 
   egress {
     from_port   = 0
@@ -51,26 +52,26 @@ resource "aws_security_group" "node" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = "${
-    map(
-     "Name", "eks-node-${local.name2}",
-     "kubernetes.io/cluster/${var.cluster_name}", "owned",
-    )
-  }"
+  tags = {
+    "Name"                                      = "eks-node-${local.name2}"
+    "kubernetes.io/cluster/${var.cluster_name}" = "owned"
+  }
 
   # This is a convenient place to destroy stray ENIs left by node's amazon-vpc-cni-k8s.
   # We could piggyback on aws_launch_configuration.node instead, but EKS masters installs their own ENIs.
   provisioner "local-exec" {
-    when       = "destroy"
-    on_failure = "continue"
+    when       = destroy
+    on_failure = continue
+    # Warning: External references from destroy provisioners are deprecated
+    # export AWS_DEFAULT_REGION=${data.aws_region.current.name}
     command    = <<EOF
-export AWS_DEFAULT_REGION=${data.aws_region.current.name}
 aws ec2 describe-network-interfaces \
-        --filters Name=vpc-id,Values=${aws_vpc.cluster.id} Name=status,Values=available \
+        --filters Name=vpc-id,Values=${self.vpc_id} Name=status,Values=available \
         --query 'NetworkInterfaces[*].NetworkInterfaceId' \
         --output text \
     | xargs -tn1 aws ec2 delete-network-interface --network-interface-id
 EOF
+
   }
 }
 
@@ -78,8 +79,8 @@ resource "aws_security_group_rule" "node_ingress_self" {
   description              = "Allow node to communicate with each other"
   from_port                = 0
   protocol                 = "-1"
-  security_group_id        = "${aws_security_group.node.id}"
-  source_security_group_id = "${aws_security_group.node.id}"
+  security_group_id        = aws_security_group.node.id
+  source_security_group_id = aws_security_group.node.id
   to_port                  = 65535
   type                     = "ingress"
 }
@@ -88,8 +89,8 @@ resource "aws_security_group_rule" "node_ingress_cluster" {
   description              = "Allow node Kubelets and pods to receive communication from the cluster control plane"
   from_port                = 1025
   protocol                 = "tcp"
-  security_group_id        = "${aws_security_group.node.id}"
-  source_security_group_id = "${aws_security_group.cluster.id}"
+  security_group_id        = aws_security_group.node.id
+  source_security_group_id = aws_security_group.cluster.id
   to_port                  = 65535
   type                     = "ingress"
 }
@@ -98,21 +99,21 @@ resource "aws_security_group_rule" "node_ingress_cluster443" {
   description              = "Allow pods running extension API servers on port 443 to receive communication from cluster control plane"
   from_port                = 443
   protocol                 = "tcp"
-  security_group_id        = "${aws_security_group.node.id}"
-  source_security_group_id = "${aws_security_group.cluster.id}"
+  security_group_id        = aws_security_group.node.id
+  source_security_group_id = aws_security_group.cluster.id
   to_port                  = 443
   type                     = "ingress"
 }
 
 resource "aws_security_group_rule" "node_ssh" {
-  cidr_blocks              = ["0.0.0.0/0"]
-  ipv6_cidr_blocks         = ["::/0"]
-  description              = "Allow node SSH access"
-  from_port                = 22
-  protocol                 = "tcp"
-  security_group_id        = "${aws_security_group.node.id}"
-  to_port                  = 22
-  type                     = "ingress"
+  cidr_blocks       = ["0.0.0.0/0"]
+  ipv6_cidr_blocks  = ["::/0"]
+  description       = "Allow node SSH access"
+  from_port         = 22
+  protocol          = "tcp"
+  security_group_id = aws_security_group.node.id
+  to_port           = 22
+  type              = "ingress"
 }
 
 locals {
@@ -136,5 +137,5 @@ locals {
     "g4dn.12xlarge",
     "g4dn.metal",
   ]
-  worker_instance_gpu = "${contains(local.gpu_instance_types, var.worker_instance_type)}"
+  worker_instance_gpu = contains(local.gpu_instance_types, var.worker_instance_type)
 }

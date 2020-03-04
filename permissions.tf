@@ -1,6 +1,6 @@
 resource "aws_iam_role_policy" "node" {
-  name  = "eks-node-${local.name2}"
-  role  = "${aws_iam_role.node.id}"
+  name = "eks-node-${local.name2}"
+  role = aws_iam_role.node.id
 
   policy = <<POLICY
 {
@@ -24,4 +24,5 @@ resource "aws_iam_role_policy" "node" {
   ]
 }
 POLICY
+
 }

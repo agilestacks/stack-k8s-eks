@@ -16,41 +16,42 @@ locals {
 #!/bin/sh
 exec /etc/eks/bootstrap.sh ${var.cluster_name}
 USERDATA
+
 }
 
 resource "aws_launch_configuration" "node" {
   associate_public_ip_address = true
-  iam_instance_profile        = "${aws_iam_instance_profile.node.name}"
-  image_id                    = "${data.aws_ami.eks_worker.id}"
-  instance_type               = "${var.worker_instance_type}"
-  key_name                    = "${var.keypair}"
+  iam_instance_profile        = aws_iam_instance_profile.node.name
+  image_id                    = data.aws_ami.eks_worker.id
+  instance_type               = var.worker_instance_type
+  key_name                    = var.keypair
   name_prefix                 = "eks-node-${local.name2}"
-  security_groups             = ["${aws_security_group.node.id}"]
-  spot_price                  = "${var.worker_spot_price}"
-  user_data_base64            = "${base64encode(local.userdata)}"
+  security_groups             = [aws_security_group.node.id]
+  spot_price                  = var.worker_spot_price
+  user_data_base64            = base64encode(local.userdata)
 
   lifecycle {
     create_before_destroy = true
-    ignore_changes        = ["image_id"]
+    ignore_changes        = [image_id]
   }
 
   root_block_device {
-    volume_type = "${var.worker_root_volume_type}"
-    volume_size = "${var.worker_root_volume_size}"
-    iops        = "${var.worker_root_volume_type == "io1" ? var.worker_root_volume_iops : 0}"
+    volume_type = var.worker_root_volume_type
+    volume_size = var.worker_root_volume_size
+    iops        = var.worker_root_volume_type == "io1" ? var.worker_root_volume_iops : 0
   }
 }
 
 resource "aws_autoscaling_group" "nodes" {
   name = "eks-node-${local.name2}"
 
-  vpc_zone_identifier  = ["${aws_subnet.nodes.*.id}"]
-  launch_configuration = "${aws_launch_configuration.node.id}"
-  desired_capacity     = "${var.worker_count}"
+  vpc_zone_identifier  = aws_subnet.nodes.*.id
+  launch_configuration = aws_launch_configuration.node.id
+  desired_capacity     = var.worker_count
   min_size             = 1
-  max_size             = "${var.worker_max_count}"
+  max_size             = var.worker_max_count
 
-  depends_on = ["aws_eks_cluster.main"]
+  depends_on = [aws_eks_cluster.main]
 
   tag {
     key                 = "Name"
