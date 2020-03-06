@@ -32,7 +32,12 @@ terraform   ?= terraform-v0.12
 TF_CLI_ARGS ?= -input=false
 TFPLAN      := $(TF_DATA_DIR)/$(DOMAIN_NAME).tfplan
 
-WORKER_IMPL := $(if $(TF_VAR_worker_spot_price),autoscaling,nodegroup)
+# If instance_type contains comma, ie. r5.large:1,m5.large:2,c5.large (implicit :1 weight)
+# then it is Mixed ASG - with empty spot price that defaults on AWS side to on-demand price, or a specified spot price
+# Else if spot price is set then it is a plain ASG with spot instances
+# Else it is on-demand instances via native EKS nodegroup
+comma := ,
+WORKER_IMPL := $(if $(or $(findstring $(comma),$(TF_VAR_worker_instance_type)),$(TF_VAR_worker_spot_price)),autoscaling,nodegroup)
 
 deploy: init import plan apply iam gpu createsa storage token output
 
