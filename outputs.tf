@@ -96,7 +96,7 @@ output "vpc_cidr_block" {
 }
 
 output "worker_subnet_id" {
-  value = aws_subnet.nodes[0].id
+  value = length(aws_subnet.nodes) > 0 ? aws_subnet.nodes[0].id : ""
 }
 
 output "worker_subnet_ids" {
