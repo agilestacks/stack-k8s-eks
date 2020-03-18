@@ -94,7 +94,7 @@ resource "aws_autoscaling_group" "nodes" {
 
   vpc_zone_identifier = aws_subnet.nodes.*.id
   desired_capacity    = var.worker_count
-  min_size            = 1
+  min_size            = var.worker_count
   max_size            = max(var.worker_max_count, var.worker_count)
 
   # either launch template or mixed instance policy is activated
