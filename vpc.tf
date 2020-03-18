@@ -41,6 +41,21 @@ resource "aws_internet_gateway" "cluster" {
   tags = {
     Name = local.name2
   }
+
+  # Delete stray ELBs
+  provisioner "local-exec" {
+    when       = destroy
+    on_failure = continue
+    command    = <<EOF
+aws elb describe-load-balancers \
+        --no-paginate \
+        --query LoadBalancerDescriptions \
+        --output json \
+    | jq -r '.[] | select(.VPCId == "${self.vpc_id}") | .LoadBalancerName' \
+    | xargs -tn1 aws elb delete-load-balancer --load-balancer-name
+EOF
+
+  }
 }
 
 resource "aws_route_table" "cluster" {

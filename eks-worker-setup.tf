@@ -58,7 +58,7 @@ resource "aws_security_group" "node" {
   }
 
   # This is a convenient place to destroy stray ENIs left by node's amazon-vpc-cni-k8s.
-  # We could piggyback on aws_launch_configuration.node instead, but EKS masters installs their own ENIs.
+  # We could piggyback on aws_launch_template.node instead, but EKS masters installs their own ENIs.
   provisioner "local-exec" {
     when       = destroy
     on_failure = continue
@@ -66,6 +66,7 @@ resource "aws_security_group" "node" {
     # export AWS_DEFAULT_REGION=${data.aws_region.current.name}
     command    = <<EOF
 aws ec2 describe-network-interfaces \
+        --no-paginate \
         --filters Name=vpc-id,Values=${self.vpc_id} Name=status,Values=available \
         --query 'NetworkInterfaces[*].NetworkInterfaceId' \
         --output text \
