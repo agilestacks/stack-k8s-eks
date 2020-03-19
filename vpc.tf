@@ -5,6 +5,20 @@ resource "aws_vpc" "cluster" {
     "Name"                                      = local.name2
     "kubernetes.io/cluster/${var.cluster_name}" = "shared"
   }
+  provisioner "local-exec" {
+    when       = destroy
+    on_failure = continue
+    command    = <<EOF
+aws ec2 describe-security-groups \
+        --no-paginate \
+        --filters Name=vpc-id,Values=${self.id} \
+        --query SecurityGroups \
+        --output json \
+    | jq -r '.[] | select(.GroupName != "default") | .GroupId' \
+    | xargs -tn1 aws ec2 delete-security-group --group-id
+EOF
+
+  }
 }
 
 locals {
