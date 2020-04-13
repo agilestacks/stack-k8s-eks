@@ -5,133 +5,134 @@ meta:
   name: stack-k8s-eks
   brief: AWS EKS
   source:
-      dir: ../stack-k8s-eks/
+    dir: ../stack-k8s-eks/
 
 requires:
-  - aws
+- aws
+
 provides:
-  - kubernetes
+- kubernetes
 
 lifecycle:
   verbs:
-    - deploy
-    - undeploy
+  - deploy
+  - undeploy
   readyConditions:
-    - dns: ${kubernetes.api.endpoint}
-      url: https://${kubernetes.api.endpoint}
+  - dns: ${kubernetes.api.endpoint}
+    url: https://${kubernetes.api.endpoint}
   options:
     random:
       bytes: 1536
 
 parameters:
-  - name: terraform.bucket.name
-    env: STATE_BUCKET
-  - name: terraform.bucket.region
-    env: STATE_REGION
+- name: terraform.bucket.name
+  env: STATE_BUCKET
+- name: terraform.bucket.region
+  env: STATE_REGION
 
-  - name: dns.domain
-    env: DOMAIN_NAME
+- name: dns.domain
+  env: DOMAIN_NAME
 
-  - name: cloud.region
-    env: AWS_DEFAULT_REGION
-  - name: cloud.availabilityZone
-    empty: allow
-    env: TF_VAR_availability_zone
-  - name: cloud.availabilityZones
-    empty: allow
-    env: TF_VAR_availability_zones
-  - name: cloud.sshKey
-    env: TF_VAR_keypair
+- name: cloud.region
+  env: AWS_DEFAULT_REGION
+- name: cloud.availabilityZone
+  empty: allow
+  env: TF_VAR_availability_zone
+- name: cloud.availabilityZones
+  empty: allow
+  env: TF_VAR_availability_zones
+- name: cloud.sshKey
+  env: TF_VAR_keypair
 
-  - name: component.kubernetes
+- name: component.kubernetes
+  parameters:
+
+  - name: eks
     parameters:
-
-    - name: eks
-      parameters:
-      - name: cluster
-        empty: allow
-        env: CLUSTER_NAME
-      # if `availabilityZones` is set then we use that, for example 'us-east-1a,us-east-1b'
-      # else `nZones` number of zones are used from the list of available zones in current region
-      # must be at least 2
-      - name: nZones
-        value: 2
-        env: TF_VAR_n_zones
-      - name: admin
-        kind: user
-        env: TF_VAR_eks_admin
-
-    - name: worker
+    - name: cluster
+      empty: allow
+      env: CLUSTER_NAME
+    # if `availabilityZones` is set then we use that, for example 'us-east-1a,us-east-1b'
+    # else `nZones` number of zones are used from the list of available zones in current region
+    # must be at least 2
+    - name: nZones
+      value: 2
+      env: TF_VAR_n_zones
+    - name: admin
       kind: user
-      parameters:
-      - name: count
-        env: TF_VAR_worker_count
-        default: 2
-      - name: maxCount
-        value: ${component.kubernetes.worker.count}
-        env: TF_VAR_worker_max_count
-      - name: size
-        env: TF_VAR_worker_instance_type
-        default: r5.large
-      - name: spotPrice
-        env: TF_VAR_worker_spot_price
-        empty: allow
-      - name: volume.size
-        env: TF_VAR_worker_root_volume_size
-        value: 50
-    - name: worker.mixed
-      parameters:
-      - name: onDemandBaseCapacity
-        value: 0
-        env: TF_VAR_on_demand_base_capacity
-      - name: onDemandPercentageAboveBaseCapacity
-        value: 0
-        env: TF_VAR_on_demand_percentage_above_base_capacity
-      - name: spotAllocationStrategy
-        value: lowest-price
-        env: TF_VAR_spot_allocation_strategy
-      - name: spotInstancePools
-        value: 2
-        env: TF_VAR_spot_instance_pools
+      env: TF_VAR_eks_admin
+
+  - name: worker
+    kind: user
+    parameters:
+    - name: count
+      env: TF_VAR_worker_count
+      default: 2
+    - name: maxCount
+      value: ${component.kubernetes.worker.count}
+      env: TF_VAR_worker_max_count
+    - name: size
+      env: TF_VAR_worker_instance_type
+      default: r5.large
+    - name: spotPrice
+      env: TF_VAR_worker_spot_price
+      empty: allow
+    - name: volume.size
+      env: TF_VAR_worker_root_volume_size
+      value: 50
+  - name: worker.mixed
+    parameters:
+    - name: onDemandBaseCapacity
+      value: 0
+      env: TF_VAR_on_demand_base_capacity
+    - name: onDemandPercentageAboveBaseCapacity
+      value: 0
+      env: TF_VAR_on_demand_percentage_above_base_capacity
+    - name: spotAllocationStrategy
+      value: lowest-price
+      env: TF_VAR_spot_allocation_strategy
+    - name: spotInstancePools
+      value: 2
+      env: TF_VAR_spot_instance_pools
 
 outputs:
-  - name: dns.domain
-  - name: dns.name
-    fromTfVar: dns_name
-  - name: dns.baseDomain
-    fromTfVar: dns_base_domain
+- name: dns.domain
+- name: dns.name
+  fromTfVar: dns_name
+- name: dns.baseDomain
+  fromTfVar: dns_base_domain
 
-  - name: cloud.region
-    fromTfVar: region
-  - name: cloud.availabilityZone
-    fromTfVar: zone
-  - name: cloud.availabilityZones
-    fromTfVar: zones
+- name: cloud.region
+  fromTfVar: region
+- name: cloud.availabilityZone
+  fromTfVar: zone
+- name: cloud.availabilityZones
+  fromTfVar: zones
 
-  - name: cloud.vpc.id
-    fromTfVar: vpc
-  - name: cloud.vpc.cidr
-    fromTfVar: vpc_cidr_block
-  - name: cloud.vpc.worker.subnet.id
-    fromTfVar: worker_subnet_id
-  - name: cloud.vpc.worker.subnet.ids
-    fromTfVar: worker_subnet_ids
-  - name: cloud.vpc.worker.sg.id
-    fromTfVar: worker_sg_id
-  - name: cloud.iam.worker.instanceProfile
-    fromTfVar: worker_instance_profile
-  - name: cloud.role.worker
-    fromTfVar: worker_role
+- name: cloud.vpc.id
+  fromTfVar: vpc
+- name: cloud.vpc.cidr
+  fromTfVar: vpc_cidr_block
+- name: cloud.vpc.worker.subnet.id
+  fromTfVar: worker_subnet_id
+- name: cloud.vpc.worker.subnet.ids
+  fromTfVar: worker_subnet_ids
+- name: cloud.vpc.worker.sg.id
+  fromTfVar: worker_sg_id
+- name: cloud.iam.worker.instanceProfile
+  fromTfVar: worker_instance_profile
+- name: cloud.role.worker
+  fromTfVar: worker_role
 
-  - name: kubernetes.flavor
-    value: eks
-  - name: kubernetes.api.endpoint
-    fromTfVar: api_endpoint
-  - name: kubernetes.api.caCert
-    fromTfVar: api_ca_crt
-    kind: secret/certificate
-  - name: kubernetes.api.token
-    fromTfVar: token/base64
-    kind: secret/token
-  - name: kubernetes.eks.cluster
-    fromTfVar: cluster_name
+- name: kubernetes.flavor
+  value: eks
+- name: kubernetes.api.endpoint
+  fromTfVar: api_endpoint
+- name: kubernetes.api.caCert
+  fromTfVar: api_ca_crt
+  kind: secret/certificate
+- name: kubernetes.api.token
+  fromTfVar: token/base64
+  kind: secret/token
+- name: kubernetes.eks.cluster
+  fromTfVar: cluster_name
