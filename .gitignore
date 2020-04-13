@@ -3,3 +3,4 @@
 terraform.tfstate*
 kubeconfig.*
 /eks-worker.tf
+/eks-fargate.tf

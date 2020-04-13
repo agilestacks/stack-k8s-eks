@@ -43,9 +43,12 @@ resource "aws_subnet" "nodes" {
   cidr_block        = "10.0.${count.index}.0/24" # TODO
   vpc_id            = aws_vpc.cluster.id
 
+  map_public_ip_on_launch = true
+
   tags = {
     "Name"                                      = "${local.name2}-${count.index}"
     "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+    "kind"                                      = "public"
   }
 }
 

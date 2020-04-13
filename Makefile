@@ -1,10 +1,11 @@
 .DEFAULT_GOAL := deploy
 
-COMPONENT_NAME ?= stack-k8s-eks
-DOMAIN_NAME    ?= eks-1.dev.superhub.io
-NAME           := $(shell echo $(DOMAIN_NAME) | cut -d. -f1)
-BASE_DOMAIN    := $(shell echo $(DOMAIN_NAME) | cut -d. -f2-)
-NAME2          := $(shell echo $(DOMAIN_NAME) | sed -E -e 's/[^[:alnum:]]+/-/g' | cut -c1-100)
+COMPONENT_NAME  ?= stack-k8s-eks
+DOMAIN_NAME     ?= eks-1.dev.superhub.io
+FARGATE_ENABLED ?= false
+NAME            := $(shell echo $(DOMAIN_NAME) | cut -d. -f1)
+BASE_DOMAIN     := $(shell echo $(DOMAIN_NAME) | cut -d. -f2-)
+NAME2           := $(shell echo $(DOMAIN_NAME) | sed -E -e 's/[^[:alnum:]]+/-/g' | cut -c1-100)
 
 STATE_BUCKET ?= terraform.agilestacks.com
 STATE_REGION ?= us-east-1
@@ -44,6 +45,7 @@ deploy: init import plan apply iam gpu createsa storage token output
 init:
 	@mkdir -p $(TF_DATA_DIR)
 	@cp -v eks-worker-$(WORKER_IMPL).tf.ignore eks-worker.tf
+	@if test $(FARGATE_ENABLED) = true; then cp eks-fargate.tf.ignore eks-fargate.tf; else rm -f eks-fargate.tf; fi
 	$(terraform) init -get=true $(TF_CLI_ARGS) -reconfigure -force-copy  \
 		-backend=true -input=false \
 		-backend-config="bucket=$(STATE_BUCKET)" \
