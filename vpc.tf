@@ -5,6 +5,23 @@ resource "aws_vpc" "cluster" {
     "Name"                                      = local.name2
     "kubernetes.io/cluster/${var.cluster_name}" = "shared"
   }
+
+  # Destroy stray ENIs left by amazon-vpc-cni-k8s.
+  # EKS masters also installs their own ENIs.
+  provisioner "local-exec" {
+    when       = destroy
+    on_failure = continue
+    command    = <<EOF
+aws ec2 describe-network-interfaces \
+        --no-paginate \
+        --filters Name=vpc-id,Values=${self.id} Name=status,Values=available \
+        --query 'NetworkInterfaces[*].NetworkInterfaceId' \
+        --output text \
+    | xargs -tn1 aws ec2 delete-network-interface --network-interface-id
+EOF
+
+  }
+
   provisioner "local-exec" {
     when       = destroy
     on_failure = continue
@@ -48,6 +65,7 @@ resource "aws_subnet" "nodes" {
   tags = {
     "Name"                                      = "${local.name2}-${count.index}"
     "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+    "kubernetes.io/role/elb"                    = "1"
     "kind"                                      = "public"
   }
 }

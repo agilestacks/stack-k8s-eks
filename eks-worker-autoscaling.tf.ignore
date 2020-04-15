@@ -38,7 +38,7 @@ resource "aws_launch_template" "node" {
   key_name      = var.keypair
   user_data     = base64encode(local.userdata)
 
-  # vpc_security_group_ids = [aws_security_group.node.id]
+  # vpc_security_group_ids = [aws_eks_cluster.main.vpc_config[0].cluster_security_group_id]
 
   lifecycle {
     ignore_changes = [image_id]
@@ -74,7 +74,7 @@ resource "aws_launch_template" "node" {
   network_interfaces {
     associate_public_ip_address = true
     delete_on_termination       = true
-    security_groups             = [aws_security_group.node.id]
+    security_groups             = [aws_eks_cluster.main.vpc_config[0].cluster_security_group_id]
   }
   # tag_specifications {
   #   resource_type = "instance"
