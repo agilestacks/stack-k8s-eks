@@ -8,7 +8,7 @@ provider "aws" {
 }
 
 provider "local" {
-  version = "1.2.2"
+  version = "1.4.0"
 }
 
 data "aws_region" "current" {}
