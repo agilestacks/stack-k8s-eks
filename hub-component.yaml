@@ -4,7 +4,7 @@ kind: component
 meta:
   name: stack-k8s-eks
   brief: AWS EKS
-  version: 1.15
+  version: 1.16
   source:
     dir: ../stack-k8s-eks/
 

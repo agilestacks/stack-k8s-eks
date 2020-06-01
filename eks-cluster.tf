@@ -25,6 +25,9 @@ resource "aws_iam_role_policy_attachment" "cluster-AmazonEKSClusterPolicy" {
   role       = aws_iam_role.cluster.name
 }
 
+# TODO should this go away?
+# Prior to April 16, 2020, ManagedPolicyArns had an entry for arn:aws:iam::aws:policy/AmazonEKSServicePolicy.
+# With the AWSServiceRoleForAmazonEKS service-linked role, that policy is no longer required.
 resource "aws_iam_role_policy_attachment" "cluster-AmazonEKSServicePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
   role       = aws_iam_role.cluster.name
@@ -50,7 +53,7 @@ resource "aws_eks_cluster" "main" {
 }
 
 locals {
-  version           = "1.15"
+  version           = "1.16"
   api_endpoint      = replace(aws_eks_cluster.main.endpoint, "/https://([^/]+).*/", "$1")
   api_endpoint_host = replace(local.api_endpoint, "/([^:]+).*/", "$1")
 }

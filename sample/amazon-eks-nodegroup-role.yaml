@@ -6,6 +6,8 @@ Mappings:
   ServicePrincipals:
     aws-cn:
       ec2: ec2.amazonaws.com.cn
+    aws-us-gov:
+      ec2: ec2.amazonaws.com
     aws:
       ec2: ec2.amazonaws.com
 
