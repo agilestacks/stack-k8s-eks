@@ -9,6 +9,13 @@ JQ="${JQ:-jq}"
 DOMAIN="$1"
 if test -z "$DOMAIN"; then echo "Usage: $0 <domain.name>"; exit 1; fi
 
+if test -n "$EXTERNAL_AWS_ACCESS_KEY" -a -n "$EXTERNAL_AWS_SECRET_KEY"; then
+  unset AWS_SESSION_TOKEN
+  export AWS_DEFAULT_REGION=us-east-1
+  export AWS_ACCESS_KEY_ID=$EXTERNAL_AWS_ACCESS_KEY
+  export AWS_SECRET_ACCESS_KEY=$EXTERNAL_AWS_SECRET_KEY
+fi
+
 route53_zones_resp=$($AWS --output=json route53 list-hosted-zones-by-name --dns-name "$DOMAIN" --max-items 1)
 zone=$($JQ .HostedZones[0] <<< $route53_zones_resp)
 test -z "$zone" -o "$zone" = "null" && exit 0

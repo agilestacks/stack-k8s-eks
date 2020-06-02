@@ -44,6 +44,12 @@ parameters:
   env: TF_VAR_availability_zones
 - name: cloud.sshKey
   env: TF_VAR_keypair
+- name: cloud.aws.accessKey
+  empty: allow
+  env: EXTERNAL_AWS_ACCESS_KEY
+- name: cloud.aws.secretKey
+  empty: allow
+  env: EXTERNAL_AWS_SECRET_KEY
 
 - name: component.kubernetes
   parameters:

@@ -27,6 +27,8 @@ export TF_VAR_eks_admin    ?= $(USER)
 export TF_VAR_worker_count         ?= 2
 export TF_VAR_worker_instance_type ?= r5.large
 export TF_VAR_worker_spot_price    ?= 0.06
+export TF_VAR_external_aws_access_key_id     := $(EXTERNAL_AWS_ACCESS_KEY)
+export TF_VAR_external_aws_secret_access_key := $(EXTERNAL_AWS_SECRET_KEY)
 
 kubectl     ?= kubectl --kubeconfig=kubeconfig.$(DOMAIN_NAME)
 terraform   ?= terraform-v0.12
@@ -44,8 +46,8 @@ deploy: init import plan apply iam gpu createsa storage token output
 
 init:
 	@mkdir -p $(TF_DATA_DIR)
-	@cp -v eks-worker-$(WORKER_IMPL).tf.ignore eks-worker.tf
-	@if test $(FARGATE_ENABLED) = true; then cp eks-fargate.tf.ignore eks-fargate.tf; else rm -f eks-fargate.tf; fi
+	@cp -v fragments/eks-worker-$(WORKER_IMPL).tf eks-worker.tf
+	@if test $(FARGATE_ENABLED) = true; then cp -v fragments/eks-fargate.tf .; else rm -f eks-fargate.tf; fi
 	$(terraform) init -get=true $(TF_CLI_ARGS) -reconfigure -force-copy  \
 		-backend=true -input=false \
 		-backend-config="bucket=$(STATE_BUCKET)" \
@@ -116,5 +118,5 @@ import: init import_route53
 import_route53: init
 	@set -e; trap 'echo $$id' EXIT; \
 		id=$$(AWS="$(aws)" JQ="$(jq)" bin/route53-zone-by-domain.sh $(DOMAIN_NAME)); \
-		if test -n "$$id"; then $(terraform) import $(TF_CLI_ARGS) aws_route53_zone.main "$$id" || exit 0; fi
+		if test -n "$$id"; then $(terraform) import $(TF_CLI_ARGS) aws_route53_zone.cluster "$$id" || exit 0; fi
 .PHONY: import_route53

@@ -115,6 +115,16 @@ variable "spot_instance_pools" {
   default = "2"
 }
 
+variable "external_aws_access_key_id" {
+  type    = string
+  default = ""
+}
+
+variable "external_aws_secret_access_key" {
+  type    = string
+  default = ""
+}
+
 
 locals {
   name2 = replace(var.domain_name, ".", "-")

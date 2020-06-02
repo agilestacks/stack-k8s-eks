@@ -21,7 +21,7 @@ POLICY
 }
 
 resource "aws_iam_role_policy_attachment" "cluster-AmazonEKSClusterPolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+  policy_arn = "arn:${local.partition}:iam::aws:policy/AmazonEKSClusterPolicy"
   role       = aws_iam_role.cluster.name
 }
 
@@ -29,7 +29,7 @@ resource "aws_iam_role_policy_attachment" "cluster-AmazonEKSClusterPolicy" {
 # Prior to April 16, 2020, ManagedPolicyArns had an entry for arn:aws:iam::aws:policy/AmazonEKSServicePolicy.
 # With the AWSServiceRoleForAmazonEKS service-linked role, that policy is no longer required.
 resource "aws_iam_role_policy_attachment" "cluster-AmazonEKSServicePolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
+  policy_arn = "arn:${local.partition}:iam::aws:policy/AmazonEKSServicePolicy"
   role       = aws_iam_role.cluster.name
 }
 
