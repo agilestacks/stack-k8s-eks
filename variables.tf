@@ -1,6 +1,6 @@
 variable "domain_name" {
   description = "Desired DNS domain of the cluster"
-  default     = "eks-1.dev.superhub.io
+  default     = "eks-1.dev.superhub.io"
   type        = string
 }
 
