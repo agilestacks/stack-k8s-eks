@@ -9,6 +9,12 @@ variable "name" {
   type        = string
 }
 
+variable "version" {
+  description = "Kubernetes version"
+  type        = string
+  default     = "1.16"
+}
+
 variable "base_domain" {
   description = "DNS base domain"
   type        = string
