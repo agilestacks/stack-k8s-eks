@@ -9,10 +9,10 @@ variable "name" {
   type        = string
 }
 
-variable "version" {
+variable "k8s_version" {
   description = "Kubernetes version"
   type        = string
-  default     = "1.16"
+  default     = "1.17"
 }
 
 variable "base_domain" {

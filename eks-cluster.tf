@@ -53,7 +53,7 @@ resource "aws_eks_cluster" "main" {
 }
 
 locals {
-  version           = var.version
+  version           = var.k8s_version
   api_endpoint      = replace(aws_eks_cluster.main.endpoint, "/https://([^/]+).*/", "$1")
   api_endpoint_host = replace(local.api_endpoint, "/([^:]+).*/", "$1")
 }
