@@ -24,6 +24,7 @@ export TF_VAR_cluster_name ?= $(or $(CLUSTER_NAME),$(NAME2))
 export TF_VAR_keypair      ?= agilestacks
 export TF_VAR_n_zones      ?= 2
 export TF_VAR_eks_admin    ?= $(USER)
+export TF_VAR_k8s_version  ?= $(K8S_VERSION)
 export TF_VAR_worker_count         ?= 2
 export TF_VAR_worker_instance_type ?= r5.large
 export TF_VAR_worker_spot_price    ?= 0.06
@@ -42,7 +43,7 @@ TFPLAN      := $(TF_DATA_DIR)/$(DOMAIN_NAME).tfplan
 comma := ,
 WORKER_IMPL := $(if $(or $(findstring $(comma),$(TF_VAR_worker_instance_type)),$(TF_VAR_worker_spot_price)),autoscaling,nodegroup)
 
-deploy: init import plan apply iam gpu createsa storage token output
+deploy: init import plan apply iam gpu createsa storage token upgrade output
 
 init:
 	@mkdir -p $(TF_DATA_DIR)
@@ -120,3 +121,7 @@ import_route53: init
 		id=$$(AWS="$(aws)" JQ="$(jq)" bin/route53-zone-by-domain.sh $(DOMAIN_NAME)); \
 		if test -n "$$id"; then $(terraform) import $(TF_CLI_ARGS) aws_route53_zone.cluster "$$id" || exit 0; fi
 .PHONY: import_route53
+
+upgrade:
+	bin/upgrade.sh
+.PHONY: upgrade
