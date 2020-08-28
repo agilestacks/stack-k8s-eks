@@ -7,6 +7,8 @@ NAME            := $(shell echo $(DOMAIN_NAME) | cut -d. -f1)
 BASE_DOMAIN     := $(shell echo $(DOMAIN_NAME) | cut -d. -f2-)
 NAME2           := $(shell echo $(DOMAIN_NAME) | sed -E -e 's/[^[:alnum:]]+/-/g' | cut -c1-100)
 
+export CLUSTER_NAME := $(or $(CLUSTER_NAME),$(NAME2))
+
 STATE_BUCKET ?= terraform.agilestacks.com
 STATE_REGION ?= us-east-1
 
@@ -20,7 +22,7 @@ export TF_LOG_PATH ?= $(TF_DATA_DIR)/terraform.log
 export TF_VAR_domain_name  := $(DOMAIN_NAME)
 export TF_VAR_name         := $(NAME)
 export TF_VAR_base_domain  := $(BASE_DOMAIN)
-export TF_VAR_cluster_name ?= $(or $(CLUSTER_NAME),$(NAME2))
+export TF_VAR_cluster_name ?= $(CLUSTER_NAME)
 export TF_VAR_keypair      ?= agilestacks
 export TF_VAR_n_zones      ?= 2
 # TODO make admin user trully optional
