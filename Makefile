@@ -23,7 +23,8 @@ export TF_VAR_base_domain  := $(BASE_DOMAIN)
 export TF_VAR_cluster_name ?= $(or $(CLUSTER_NAME),$(NAME2))
 export TF_VAR_keypair      ?= agilestacks
 export TF_VAR_n_zones      ?= 2
-export TF_VAR_eks_admin    ?= $(USER)
+# TODO make admin user trully optional
+export TF_VAR_eks_admin    := $(or $(EKS_ADMIN),$(shell aws sts get-caller-identity --output json | jq -r .Arn | cut -d/ -f2))
 export TF_VAR_k8s_version  ?= $(K8S_VERSION)
 export TF_VAR_worker_count         ?= 2
 export TF_VAR_worker_instance_type ?= r5.large
