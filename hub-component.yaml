@@ -143,6 +143,8 @@ outputs:
 
 - name: kubernetes.flavor
   value: eks
+- name: kubernetes.version
+  value: ${component.kubernetes.version}
 - name: kubernetes.api.endpoint
   fromTfVar: api_endpoint
 - name: kubernetes.api.caCert
