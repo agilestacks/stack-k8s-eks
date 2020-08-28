@@ -23,18 +23,13 @@ EOF
 }
 
 locals {
-  custom_availability_zones = split(",", var.availability_zones)
-  n_zones                   = length(local.custom_availability_zones) > 1 ? length(local.custom_availability_zones) : var.n_zones
-
-  # TODO conditional operator cannot be used with list values prior 0.12
-  # availability_zones = "${length(local.custom_availability_zones) > 0 ? local.custom_availability_zones : data.aws_availability_zones.available.names}"
-  availability_zones_set = {
-    custom = local.custom_availability_zones
-    available = slice(
-      distinct(compact(concat([var.availability_zone], data.aws_availability_zones.available.names))),
-      0, local.n_zones)
-  }
-  availability_zones = local.availability_zones_set[length(local.custom_availability_zones) > 1 ? "custom" : "available"]
+  custom_availability_zones    = split(",", var.availability_zones)
+  n_custom_availability_zones  = length(local.custom_availability_zones)
+  n_zones                      = local.n_custom_availability_zones > 1 ? local.n_custom_availability_zones : var.n_zones
+  available_availability_zones = slice(
+    distinct(compact(concat([var.availability_zone], data.aws_availability_zones.available.names))),
+    0, local.n_zones)
+  availability_zones = local.n_custom_availability_zones > 1 ? local.custom_availability_zones : local.available_availability_zones
 }
 
 resource "aws_subnet" "nodes" {
