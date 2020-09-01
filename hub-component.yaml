@@ -93,6 +93,7 @@ parameters:
       default: r5.large
     - name: aws.spotPrice
       env: TF_VAR_worker_spot_price
+      value: ' '
       empty: allow
     - name: volume.size
       env: TF_VAR_worker_root_volume_size
