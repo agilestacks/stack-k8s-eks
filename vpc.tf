@@ -1,5 +1,6 @@
 resource "aws_vpc" "cluster" {
-  cidr_block = var.cidr_block
+  cidr_block           = var.cidr_block
+  enable_dns_hostnames = true
 
   tags = {
     "Name"                                      = local.name2
