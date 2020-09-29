@@ -11,6 +11,7 @@ resource "aws_iam_role_policy" "node" {
       "Resource": "*",
       "Action": [
         "autoscaling:*",
+        "cloudwatch:*",
         "dynamodb:*",
         "ec2:*",
         "ecr:*",
