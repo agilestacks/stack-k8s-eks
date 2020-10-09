@@ -53,7 +53,6 @@ init:
 	@cp -v fragments/eks-worker-$(WORKER_IMPL).tf eks-worker.tf
 	@if test $(FARGATE_ENABLED) = true; then cp -v fragments/eks-fargate.tf .; else rm -f eks-fargate.tf; fi
 	$(terraform) init -get=true $(TF_CLI_ARGS) -reconfigure -force-copy  \
-		-backend=true -input=false \
 		-backend-config="bucket=$(STATE_BUCKET)" \
 		-backend-config="region=$(STATE_REGION)" \
 		-backend-config="key=$(DOMAIN_NAME)/stack-k8s-eks/$(COMPONENT_NAME)/terraform.tfstate" \
@@ -65,7 +64,7 @@ plan:
 .PHONY: plan
 
 apply:
-	$(terraform) apply $(TF_CLI_ARGS) -Xshadow=false $(TFPLAN)
+	$(terraform) apply $(TF_CLI_ARGS) $(TFPLAN)
 	@echo
 .PHONY: apply
 
