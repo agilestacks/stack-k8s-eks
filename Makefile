@@ -114,8 +114,8 @@ destroy: plan
 
 import: init import_route53
 	-$(terraform) import $(TF_CLI_ARGS) aws_iam_instance_profile.node eks-node-$(NAME2)
-	-$(terraform) import $(TF_CLI_ARGS) aws_iam_role.node             eks-node-$(NAME2)
-	-$(terraform) import $(TF_CLI_ARGS) aws_iam_role.cluster          eks-cluster-$(NAME2)
+	-$(terraform) import $(TF_CLI_ARGS) aws_iam_role.node             $$(echo eks-node-$(NAME2) | cut -c1-64)
+	-$(terraform) import $(TF_CLI_ARGS) aws_iam_role.cluster          $$(echo eks-cluster-$(NAME2) | cut -c1-64)
 .PHONY: import
 
 import_route53: init

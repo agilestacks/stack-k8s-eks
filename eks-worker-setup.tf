@@ -1,5 +1,5 @@
 resource "aws_iam_role" "node" {
-  name = "eks-node-${local.name2}"
+  name = substr("eks-node-${local.name2}", 0, 64)
 
   assume_role_policy = <<POLICY
 {

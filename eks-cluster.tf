@@ -1,7 +1,7 @@
 # https://amazon-eks.s3.us-west-2.amazonaws.com/cloudformation/2020-03-23/amazon-eks-vpc-sample.yaml
 
 resource "aws_iam_role" "cluster" {
-  name = "eks-cluster-${local.name2}"
+  name = substr("eks-cluster-${local.name2}", 0, 64)
 
   assume_role_policy = <<POLICY
 {
