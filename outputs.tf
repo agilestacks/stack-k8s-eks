@@ -1,34 +1,6 @@
-data "aws_iam_user" "admin" {
-  user_name = var.eks_admin
-}
-
 resource "local_file" "ca_crt" {
   content  = base64decode(aws_eks_cluster.main.certificate_authority[0].data)
   filename = "${path.cwd}/.terraform/${var.domain_name}/ca.pem"
-}
-
-resource "local_file" "aws_auth" {
-  filename = "${path.cwd}/.terraform/${var.domain_name}/aws-auth.yaml"
-  content  = <<CONFIGMAPAWSAUTH
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: aws-auth
-  namespace: kube-system
-data:
-  mapRoles: |
-    - rolearn: ${aws_iam_role.node.arn}
-      username: system:node:{{EC2PrivateDNSName}}
-      groups:
-        - system:bootstrappers
-        - system:nodes
-  mapUsers: |
-    - userarn: ${data.aws_iam_user.admin.arn}
-      username: admin
-      groups:
-        - system:masters
-CONFIGMAPAWSAUTH
-
 }
 
 resource "local_file" "kubeconfig" {

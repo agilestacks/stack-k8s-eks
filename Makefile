@@ -25,8 +25,7 @@ export TF_VAR_base_domain  := $(BASE_DOMAIN)
 export TF_VAR_cluster_name ?= $(CLUSTER_NAME)
 export TF_VAR_keypair      ?= agilestacks
 export TF_VAR_n_zones      ?= 2
-# TODO make admin user trully optional
-export TF_VAR_eks_admin    := $(or $(EKS_ADMIN),$(shell aws sts get-caller-identity --output json | jq -r .Arn | cut -d/ -f2))
+export TF_VAR_eks_admin    := $(or $(EKS_ADMIN),$(shell aws sts get-caller-identity --output json | jq -r .Arn | grep :user/ | cut -d/ -f2))
 export TF_VAR_k8s_version  ?= $(K8S_VERSION)
 export TF_VAR_worker_count         ?= 2
 export TF_VAR_worker_instance_type ?= r5.large
@@ -51,7 +50,8 @@ deploy: init import plan apply iam gpu createsa storage token upgrade output
 init:
 	@mkdir -p $(TF_DATA_DIR)
 	@cp -v fragments/eks-worker-$(WORKER_IMPL).tf eks-worker.tf
-	@if test $(FARGATE_ENABLED) = true; then cp -v fragments/eks-fargate.tf .; else rm -f eks-fargate.tf; fi
+	@if test "$(FARGATE_ENABLED)" = true; then cp -v fragments/eks-fargate.tf .; else rm -f eks-fargate.tf; fi
+	@if test -n "$(TF_VAR_eks_admin)"; then cp -v fragments/aws-auth.tf .; else rm -f aws-auth.tf $(TF_DATA_DIR)/aws-auth.yaml; fi
 	$(terraform) init -get=true $(TF_CLI_ARGS) -reconfigure -force-copy  \
 		-backend-config="bucket=$(STATE_BUCKET)" \
 		-backend-config="region=$(STATE_REGION)" \
@@ -70,7 +70,7 @@ apply:
 
 iam:
     # Warning: kubectl apply should be used... below is ok
-	$(kubectl) apply -f $(TF_DATA_DIR)/aws-auth.yaml
+	if test -f $(TF_DATA_DIR)/aws-auth.yaml; then $(kubectl) apply -f $(TF_DATA_DIR)/aws-auth.yaml; fi
 .PHONY: iam
 
 # https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/1.0.0-beta4/nvidia-device-plugin.yml
