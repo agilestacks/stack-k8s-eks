@@ -6,7 +6,7 @@ meta:
   title: Amazon EKS
   brief: Managed Kubernetes Service
   description: >
-    Amazon Elastic Kubernetes Service (Amazon EKS) is a fully managed Kubernetes service. Amazon customers such as Intel, Snap, Intuit, GoDaddy, and Autodesk trust EKS to run their most sensitive and mission critical applications because of its security, reliability, and scalability.
+    Amazon Elastic Kubernetes Service is a fully managed Kubernetes service. Amazon customers such as Intel, Snap, Intuit, GoDaddy, and Autodesk trust EKS to run their most sensitive and mission critical applications because of its security, reliability, and scalability.
   version: 1.17
   source:
     dir: ../stack-k8s-eks/
