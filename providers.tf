@@ -1,10 +1,16 @@
 terraform {
-  required_version = ">= 0.12"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "3.17.0"
+    }
+    local = {
+      source  = "hashicorp/local"
+      version = "2.0.0"
+    }
+  }
+  required_version = ">= 0.13"
   backend "s3" {}
-}
-
-provider "aws" {
-  version = "2.61.0"
 }
 
 provider "aws" {
@@ -13,10 +19,6 @@ provider "aws" {
 
   access_key = var.external_aws_access_key_id
   secret_key = var.external_aws_secret_access_key
-}
-
-provider "local" {
-  version = "1.4.0"
 }
 
 data "aws_partition" "current" {}

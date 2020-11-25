@@ -34,7 +34,7 @@ export TF_VAR_external_aws_access_key_id     := $(EXTERNAL_AWS_ACCESS_KEY)
 export TF_VAR_external_aws_secret_access_key := $(EXTERNAL_AWS_SECRET_KEY)
 
 kubectl     ?= kubectl --kubeconfig=kubeconfig.$(DOMAIN_NAME)
-terraform   ?= terraform-v0.12
+terraform   ?= terraform
 TF_CLI_ARGS ?= -input=false
 TFPLAN      := $(TF_DATA_DIR)/$(DOMAIN_NAME).tfplan
 
@@ -67,6 +67,9 @@ apply:
 	$(terraform) apply $(TF_CLI_ARGS) $(TFPLAN)
 	@echo
 .PHONY: apply
+
+# 0.13upgrade: init
+#	$(terraform) 0.13upgrade -yes
 
 iam:
     # Warning: kubectl apply should be used... below is ok
