@@ -121,10 +121,13 @@ import: init import_route53
 	-$(terraform) import $(TF_CLI_ARGS) aws_iam_role.cluster          $$(echo eks-cluster-$(NAME2) | cut -c1-64)
 .PHONY: import
 
+import_route53: PARENT_DOMAIN=$(shell echo "$(DOMAIN_NAME)" | cut -d. -f2-)
+import_route53: PARENT_ZID=$(shell AWS="$(aws)" JQ="$(jq)" bin/route53-zone-by-domain.sh $(PARENT_DOMAIN))
 import_route53: init
 	@set -e; trap 'echo $$id' EXIT; \
 		id=$$(AWS="$(aws)" JQ="$(jq)" bin/route53-zone-by-domain.sh $(DOMAIN_NAME)); \
 		if test -n "$$id"; then $(terraform) import $(TF_CLI_ARGS) aws_route53_zone.cluster "$$id" || exit 0; fi
+	- $(terraform) import $(TF_CLI_ARGS) aws_route53_record.ns "$(PARENT_ZID)_$(DOMAIN_NAME)_NS"
 .PHONY: import_route53
 
 upgrade:
