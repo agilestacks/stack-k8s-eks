@@ -12,7 +12,7 @@ variable "name" {
 variable "k8s_version" {
   description = "Kubernetes version"
   type        = string
-  default     = "1.17"
+  default     = "1.18"
 }
 
 variable "base_domain" {
