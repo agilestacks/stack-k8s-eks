@@ -31,7 +31,7 @@ variable "eks_admin" {
 }
 
 variable "keypair" {
-  default = "agilestacks"
+  default = ""
   type    = string
 }
 

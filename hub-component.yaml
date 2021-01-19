@@ -40,20 +40,19 @@ parameters:
 
 - name: cloud.region
   env: AWS_DEFAULT_REGION
-- name: cloud.availabilityZone
+- name: cloud
   empty: allow
-  env: TF_VAR_availability_zone
-- name: cloud.availabilityZones
-  empty: allow
-  env: TF_VAR_availability_zones
-- name: cloud.sshKey
-  env: TF_VAR_keypair
-- name: cloud.aws.accessKey
-  empty: allow
-  env: EXTERNAL_AWS_ACCESS_KEY
-- name: cloud.aws.secretKey
-  empty: allow
-  env: EXTERNAL_AWS_SECRET_KEY
+  parameters:
+  - name: availabilityZone
+    env: TF_VAR_availability_zone
+  - name: availabilityZones
+    env: TF_VAR_availability_zones
+  - name: sshKey
+    env: TF_VAR_keypair
+  - name: aws.accessKey
+    env: EXTERNAL_AWS_ACCESS_KEY
+  - name: aws.secretKey
+    env: EXTERNAL_AWS_SECRET_KEY
 
 - name: component.kubernetes.version
   value: "1.18"
