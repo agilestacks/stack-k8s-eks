@@ -33,6 +33,12 @@ resource "aws_iam_role_policy_attachment" "cluster-AmazonEKSServicePolicy" {
   role       = aws_iam_role.cluster.name
 }
 
+# https://docs.aws.amazon.com/eks/latest/userguide/security-groups-for-pods.html
+resource "aws_iam_role_policy_attachment" "cluster-AmazonEKSVPCResourceController" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
+  role       = aws_iam_role.cluster.name
+}
+
 resource "aws_eks_cluster" "main" {
   name     = var.cluster_name
   version  = local.version
@@ -45,6 +51,7 @@ resource "aws_eks_cluster" "main" {
   depends_on = [
     aws_iam_role_policy_attachment.cluster-AmazonEKSClusterPolicy,
     aws_iam_role_policy_attachment.cluster-AmazonEKSServicePolicy,
+    aws_iam_role_policy_attachment.cluster-AmazonEKSVPCResourceController,
   ]
 
   timeouts {
