@@ -60,19 +60,19 @@ output "zones" {
 }
 
 output "vpc" {
-  value = aws_vpc.cluster.id
+  value = local.vpc_id
 }
 
 output "vpc_cidr_block" {
-  value = aws_vpc.cluster.cidr_block
+  value = local.vpc_cidr_block
 }
 
 output "worker_subnet_id" {
-  value = length(aws_subnet.nodes) > 0 ? aws_subnet.nodes[0].id : ""
+  value = local.subnet_ids[0]
 }
 
 output "worker_subnet_ids" {
-  value = join(",", aws_subnet.nodes.*.id)
+  value = join(",", local.subnet_ids)
 }
 
 output "worker_sg_id" {

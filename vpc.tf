@@ -33,6 +33,12 @@ locals {
   availability_zones = local.n_custom_availability_zones > 1 ? local.custom_availability_zones : local.available_availability_zones
 }
 
+locals {
+  vpc_id         = aws_vpc.cluster.id
+  vpc_cidr_block = aws_vpc.cluster.cidr_block
+  subnet_ids     = aws_subnet.nodes.*.id
+}
+
 resource "aws_subnet" "nodes" {
   count = local.n_zones
 

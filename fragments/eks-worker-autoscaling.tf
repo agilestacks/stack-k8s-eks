@@ -92,7 +92,7 @@ resource "aws_autoscaling_group" "nodes" {
 
   depends_on = [aws_eks_cluster.main]
 
-  vpc_zone_identifier = aws_subnet.nodes.*.id
+  vpc_zone_identifier = local.subnet_ids
   desired_capacity    = var.worker_count
   min_size            = var.worker_count
   max_size            = max(var.worker_max_count, var.worker_count)

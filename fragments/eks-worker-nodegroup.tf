@@ -2,7 +2,7 @@ resource "aws_eks_node_group" "nodes" {
   cluster_name    = aws_eks_cluster.main.name
   node_group_name = "initial"
   node_role_arn   = aws_iam_role.node.arn
-  subnet_ids      = aws_subnet.nodes.*.id
+  subnet_ids      = local.subnet_ids
 
   scaling_config {
     desired_size = var.worker_count
