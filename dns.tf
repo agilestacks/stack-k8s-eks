@@ -35,20 +35,20 @@ resource "aws_route53_record" "api" {
   records = [local.api_endpoint_host]
 }
 
-resource "aws_route53_record" "internal" {
-  provider = aws.dns
+# resource "aws_route53_record" "internal" {
+#   provider = aws.dns
 
-  zone_id = aws_route53_zone.cluster.zone_id
-  name    = "i"
-  type    = "NS"
-  ttl     = "300"
-  records = aws_route53_zone.internal.name_servers
-}
+#   zone_id = aws_route53_zone.cluster.zone_id
+#   name    = "i"
+#   type    = "NS"
+#   ttl     = "300"
+#   records = aws_route53_zone.internal.name_servers
+# }
 
-resource "aws_route53_zone" "internal" {
-  name = "i.${var.name}.${data.aws_route53_zone.base.name}"
-  vpc {
-    vpc_id = aws_vpc.cluster.id
-  }
-  force_destroy = true
-}
+# resource "aws_route53_zone" "internal" {
+#   name = "i.${var.name}.${data.aws_route53_zone.base.name}"
+#   vpc {
+#     vpc_id = local.vpc_id
+#   }
+#   force_destroy = true
+# }
