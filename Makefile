@@ -38,6 +38,15 @@ terraform   ?= terraform
 TF_CLI_ARGS ?= -input=false
 TFPLAN      := $(TF_DATA_DIR)/$(DOMAIN_NAME).tfplan
 
+ifneq (,$(TF_VAR_vpc_id))
+ifeq (true,$(FARGATE_ENABLED))
+$(error Cannot deploy into existing VPC with Fargate enabled: feature not implemented)
+endif
+ifeq (,$(TF_VAR_availability_zones))
+$(error Please specify cloud.availabilityZones when cloud.vpc.id is specified)
+endif
+endif
+
 # If instance_type contains comma, ie. r5.large:1,m5.large:2,c5.large (implicit :1 weight)
 # then it is Mixed ASG - with empty spot price that defaults on AWS side to on-demand price, or a specified spot price
 # Else if spot price is set then it is a plain ASG with spot instances
@@ -50,6 +59,7 @@ deploy: init import plan apply iam gpu createsa storage token upgrade output
 init:
 	@mkdir -p $(TF_DATA_DIR)
 	@cp -v fragments/eks-worker-$(WORKER_IMPL).tf eks-worker.tf
+	@rm -f existing-vpc.tf vpc.tf; if test -n "$(TF_VAR_vpc_id)"; then cp -v fragments/existing-vpc.tf .; else cp -v fragments/vpc.tf .; fi
 	@if test "$(FARGATE_ENABLED)" = true; then cp -v fragments/eks-fargate.tf .; else rm -f eks-fargate.tf; fi
 	@if test -n "$(TF_VAR_eks_admin)"; then cp -v fragments/aws-auth.tf .; else rm -f aws-auth.tf $(TF_DATA_DIR)/aws-auth.yaml; fi
 	$(terraform) init -get=true $(TF_CLI_ARGS) -reconfigure -force-copy  \

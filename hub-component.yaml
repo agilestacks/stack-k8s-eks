@@ -43,12 +43,20 @@ parameters:
 - name: cloud
   empty: allow
   parameters:
+  - name: sshKey
+    env: TF_VAR_keypair
+  # suggest availability zone(s), else `nZones` will be used
   - name: availabilityZone
     env: TF_VAR_availability_zone
   - name: availabilityZones
     env: TF_VAR_availability_zones
-  - name: sshKey
-    env: TF_VAR_keypair
+  # deploy into existing VPC
+  - name: vpc.id
+    env: TF_VAR_vpc_id
+  # explicit subnets, else all subnets
+  - name: vpc.worker.subnet.ids
+    env: TF_VAR_worker_subnet_ids
+  # GovCloud cluster bind Route53 zone in public cloud
   - name: aws.accessKey
     env: EXTERNAL_AWS_ACCESS_KEY
   - name: aws.secretKey
