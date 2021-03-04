@@ -5,3 +5,4 @@ kubeconfig.*
 /aws-auth.tf
 /eks-worker.tf
 /eks-fargate.tf
+/*vpc.tf
