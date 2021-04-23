@@ -43,7 +43,7 @@ resource "aws_subnet" "nodes" {
   count = local.n_zones
 
   availability_zone = local.availability_zones[count.index]
-  cidr_block        = "10.0.${count.index}.0/24" # TODO
+  cidr_block        = "${join(".", slice(split(".", var.cidr_block), 0, 2))}.${count.index}.0/24" # TODO
   vpc_id            = aws_vpc.cluster.id
 
   map_public_ip_on_launch = true
