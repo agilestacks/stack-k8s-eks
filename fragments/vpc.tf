@@ -5,6 +5,7 @@ resource "aws_vpc" "cluster" {
   tags = {
     "Name"                                      = local.name2
     "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+    "superhub.io/stack/${var.domain_name}"      = "owned"
   }
 
   provisioner "local-exec" {
@@ -51,6 +52,7 @@ resource "aws_subnet" "nodes" {
   tags = {
     "Name"                                      = "${local.name2}-${count.index}"
     "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+    "superhub.io/stack/${var.domain_name}"      = "owned"
     "kubernetes.io/role/elb"                    = "1"
     "kind"                                      = "public"
   }

@@ -11,7 +11,7 @@ resource "aws_route53_zone" "cluster" {
   force_destroy = true
 
   tags = {
-    "superhub.io/stack/${var.name}.${var.base_domain}": "owned"
+    "superhub.io/stack/${var.domain_name}": "owned"
   }
 }
 

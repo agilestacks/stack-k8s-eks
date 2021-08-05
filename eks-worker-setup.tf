@@ -17,7 +17,8 @@ resource "aws_iam_role" "node" {
 POLICY
 
   tags = {
-    "superhub.io/stack/${var.name}.${var.base_domain}": "owned",
+    "kubernetes.io/cluster/${var.cluster_name}": "owned",
+    "superhub.io/stack/${var.domain_name}": "owned",
     "superhub.io/role/kind": "worker"
   }
 }
