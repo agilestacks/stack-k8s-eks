@@ -82,7 +82,7 @@ variable "worker_spot_price" {
 
 variable "worker_root_volume_type" {
   type        = string
-  default     = "gp2"
+  default     = "gp3"
   description = "The type of volume for the root block device of worker nodes."
 }
 
