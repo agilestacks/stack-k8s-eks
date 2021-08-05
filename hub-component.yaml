@@ -82,6 +82,9 @@ parameters:
     - name: admin
       empty: allow
       env: EKS_ADMIN
+    - name: keyArn
+      empty: allow
+      env: TF_VAR_key_arn
     - name: fargate.enabled
       value: false
       env: FARGATE_ENABLED

@@ -46,6 +46,18 @@ resource "aws_eks_cluster" "main" {
 
   vpc_config {
     subnet_ids = local.subnet_ids
+    endpoint_private_access = true
+    endpoint_public_access  = true
+  }
+
+  dynamic encryption_config {
+    for_each = var.key_arn != "" ? [1] : []
+    content {
+      provider {
+        key_arn = var.key_arn
+      }
+      resources = ["secrets"]
+    }
   }
 
   depends_on = [
