@@ -47,6 +47,10 @@ output "api_endpoint_cname" {
   value = aws_route53_record.api.fqdn
 }
 
+output "oidc_issuer" {
+  value = local.oidc_issuer
+}
+
 output "region" {
   value = data.aws_region.current.name
 }

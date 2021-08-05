@@ -163,3 +163,5 @@ outputs:
   kind: secret/token
 - name: kubernetes.eks.cluster
   fromTfVar: cluster_name
+- name: kubernetes.eks.oidcIssuer
+  fromTfVar: oidc_issuer

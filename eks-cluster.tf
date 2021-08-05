@@ -59,8 +59,25 @@ resource "aws_eks_cluster" "main" {
   }
 }
 
+data "tls_certificate" "oidc_issuer" {
+  url = local.oidc_issuer_url
+}
+
+resource "aws_iam_openid_connect_provider" "cluster" {
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [data.tls_certificate.oidc_issuer.certificates[0].sha1_fingerprint]
+  url             = local.oidc_issuer_url
+
+  tags = {
+    "kubernetes.io/cluster/${var.cluster_name}" = "owned"
+    "superhub.io/stack/${var.domain_name}"      = "owned"
+  }
+}
+
 locals {
   version           = var.k8s_version
   api_endpoint      = replace(aws_eks_cluster.main.endpoint, "/https://([^/]+).*/", "$1")
   api_endpoint_host = replace(local.api_endpoint, "/([^:]+).*/", "$1")
+  oidc_issuer_url   = aws_eks_cluster.main.identity[0].oidc[0].issuer
+  oidc_issuer       = replace(local.oidc_issuer_url, "/https://(.+)/", "$1")
 }
