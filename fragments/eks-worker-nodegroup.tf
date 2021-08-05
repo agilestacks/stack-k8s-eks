@@ -13,6 +13,8 @@ resource "aws_eks_node_group" "nodes" {
   ami_type       = "AL2_x86_64${local.worker_instance_gpu ? "_GPU" : ""}"
   disk_size      = var.worker_root_volume_size
   instance_types = [var.worker_instance_type]
+  # TODO
+  # capacity_type =
 
   remote_access {
     ec2_ssh_key = var.keypair
