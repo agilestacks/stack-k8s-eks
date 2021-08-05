@@ -1,5 +1,5 @@
 resource "aws_iam_role_policy" "node" {
-  name = "eks-node-${local.name2}"
+  name = "BasicCloud"
   role = aws_iam_role.node.id
 
   policy = <<POLICY
