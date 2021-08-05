@@ -45,15 +45,36 @@ resource "aws_iam_instance_profile" "node" {
   role = aws_iam_role.node.name
 }
 
-resource "aws_security_group_rule" "node_ssh" {
-  cidr_blocks       = ["0.0.0.0/0"]
-  ipv6_cidr_blocks  = ["::/0"]
-  description       = "Allow node SSH access"
-  from_port         = 22
-  protocol          = "tcp"
-  security_group_id = aws_eks_cluster.main.vpc_config[0].cluster_security_group_id
-  to_port           = 22
-  type              = "ingress"
+# this is handled by EKS automatically
+# resource "aws_security_group_rule" "managed_node_ssh" {
+#   cidr_blocks       = ["0.0.0.0/0"]
+#   ipv6_cidr_blocks  = ["::/0"]
+#   description       = "Allow managed node SSH access"
+#   from_port         = 22
+#   protocol          = "tcp"
+#   security_group_id = aws_eks_cluster.main.vpc_config[0].cluster_security_group_id
+#   to_port           = 22
+#   type              = "ingress"
+# }
+
+resource "aws_security_group_rule" "shared_node_to_cluster" {
+  description              = "Allow unmanaged nodes to communicate with managed workloads"
+  from_port                = 0
+  protocol                 = "-1"
+  security_group_id        = aws_eks_cluster.main.vpc_config[0].cluster_security_group_id
+  source_security_group_id = local.shared_node_security_group_id
+  to_port                  = 65535
+  type                     = "ingress"
+}
+
+resource "aws_security_group_rule" "cluster_to_shared_node" {
+  description              = "Allow managed workloads to communicate with unmanaged nodes"
+  from_port                = 0
+  protocol                 = "-1"
+  security_group_id        = local.shared_node_security_group_id
+  source_security_group_id = aws_eks_cluster.main.vpc_config[0].cluster_security_group_id
+  to_port                  = 65535
+  type                     = "ingress"
 }
 
 locals {

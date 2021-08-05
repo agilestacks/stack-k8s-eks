@@ -40,3 +40,8 @@ variable "worker_subnet_ids" {
   default = ""
   type    = string
 }
+
+variable "worker_sg_id" {
+  default = ""
+  type    = string
+}

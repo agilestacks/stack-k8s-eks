@@ -56,6 +56,9 @@ parameters:
   # explicit subnets, else all subnets
   - name: vpc.worker.subnet.ids
     env: TF_VAR_worker_subnet_ids
+  # explicit security group, else it will be created
+  - name: vpc.worker.sg.id
+    env: TF_VAR_worker_sg_id
   # GovCloud cluster bind Route53 zone in public cloud
   - name: aws.accessKey
     env: EXTERNAL_AWS_ACCESS_KEY

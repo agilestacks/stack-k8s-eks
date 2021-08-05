@@ -6,3 +6,4 @@ kubeconfig.*
 /eks-worker.tf
 /eks-fargate.tf
 /*vpc.tf
+/*sg.tf

@@ -80,7 +80,7 @@ output "worker_subnet_ids" {
 }
 
 output "worker_sg_id" {
-  value = aws_eks_cluster.main.vpc_config[0].cluster_security_group_id
+  value = local.shared_node_security_group_id
 }
 
 output "worker_instance_profile" {

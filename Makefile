@@ -60,6 +60,7 @@ init:
 	@mkdir -p $(TF_DATA_DIR)
 	@cp -v fragments/eks-worker-$(WORKER_IMPL).tf eks-worker.tf
 	@rm -f existing-vpc.tf vpc.tf; if test -n "$(TF_VAR_vpc_id)"; then cp -v fragments/existing-vpc.tf .; else cp -v fragments/vpc.tf .; fi
+	@rm -f existing-sg.tf sg.tf; if test -n "$(TF_VAR_worker_sg_id)"; then cp -v fragments/existing-sg.tf .; else cp -v fragments/sg.tf .; fi
 	@if test "$(FARGATE_ENABLED)" = true; then cp -v fragments/eks-fargate.tf .; else rm -f eks-fargate.tf; fi
 	@if test -n "$(TF_VAR_eks_admin)"; then cp -v fragments/aws-auth.tf .; else rm -f aws-auth.tf $(TF_DATA_DIR)/aws-auth.yaml; fi
 	$(terraform) init -get=true $(TF_CLI_ARGS) -reconfigure -force-copy  \
