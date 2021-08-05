@@ -72,7 +72,7 @@ resource "aws_launch_template" "node" {
     enabled = false
   }
   network_interfaces {
-    associate_public_ip_address = true
+    # associate_public_ip_address = true
     delete_on_termination       = true
     security_groups             = [local.shared_node_security_group_id]
   }
@@ -141,6 +141,11 @@ resource "aws_autoscaling_group" "nodes" {
   }
   tag {
     key                 = "kubernetes.io/cluster/${var.cluster_name}"
+    value               = "owned"
+    propagate_at_launch = true
+  }
+  tag {
+    key                 = "superhub.io/stack/${var.domain_name}"
     value               = "owned"
     propagate_at_launch = true
   }
