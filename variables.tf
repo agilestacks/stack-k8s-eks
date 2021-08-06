@@ -60,6 +60,12 @@ variable "availability_zones" {
   type    = string
 }
 
+variable "worker_labels" {
+  type        = string
+  default     = ""
+  description = "Kubernetes worker node labels"
+}
+
 variable "worker_instance_type" {
   default = "r5.large"
   type    = string

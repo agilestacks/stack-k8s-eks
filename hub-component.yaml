@@ -104,6 +104,8 @@ parameters:
     - name: size
       env: TF_VAR_worker_instance_type
       default: r5.large
+  - name: worker
+    parameters:
     - name: aws.spotPrice
       env: TF_VAR_worker_spot_price
       value: ' '
@@ -117,6 +119,9 @@ parameters:
     - name: volume.iops
       env: TF_VAR_worker_root_volume_iops
       value: 100
+    - name: labels
+      env: TF_VAR_worker_labels
+      empty: allow
   - name: worker.mixed
     parameters:
     - name: onDemandBaseCapacity

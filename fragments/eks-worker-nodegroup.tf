@@ -15,6 +15,7 @@ resource "aws_eks_node_group" "nodes" {
   instance_types = [var.worker_instance_type]
   # TODO
   # capacity_type =
+  labels         = {for label in split(",", var.worker_labels) : split("=", label)[0] => split("=", label)[1]}
 
   remote_access {
     ec2_ssh_key = var.keypair
