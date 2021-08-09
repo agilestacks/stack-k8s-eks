@@ -30,11 +30,6 @@ resource "aws_iam_role_policy_attachment" "node-AmazonEKSWorkerNodePolicy" {
   role       = aws_iam_role.node.name
 }
 
-resource "aws_iam_role_policy_attachment" "node-AmazonEKS_CNI_Policy" {
-  policy_arn = "arn:${local.partition}:iam::aws:policy/AmazonEKS_CNI_Policy"
-  role       = aws_iam_role.node.name
-}
-
 resource "aws_iam_role_policy_attachment" "node-AmazonEC2ContainerRegistryReadOnly" {
   policy_arn = "arn:${local.partition}:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = aws_iam_role.node.name
@@ -43,6 +38,11 @@ resource "aws_iam_role_policy_attachment" "node-AmazonEC2ContainerRegistryReadOn
 resource "aws_iam_instance_profile" "node" {
   name = "eks-node-${local.name2}"
   role = aws_iam_role.node.name
+
+  depends_on = [
+    aws_iam_role_policy_attachment.node-AmazonEKSWorkerNodePolicy,
+    aws_iam_role_policy_attachment.node-AmazonEC2ContainerRegistryReadOnly,
+  ]
 }
 
 # this is handled by EKS automatically

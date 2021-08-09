@@ -166,7 +166,7 @@ outputs:
 - name: cloud.iam.worker.instanceProfile
   fromTfVar: worker_instance_profile
 - name: cloud.role.worker
-  fromTfVar: worker_role
+  fromTfVar: worker_role_name
 
 - name: kubernetes.flavor
   value: eks

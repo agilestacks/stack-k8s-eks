@@ -86,6 +86,48 @@ resource "aws_iam_openid_connect_provider" "cluster" {
   }
 }
 
+# a role to annotate aws-node daemonset's service account for CNI permissions
+data "aws_iam_policy_document" "oidc" {
+  statement {
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+    effect  = "Allow"
+
+    condition {
+      test     = "StringEquals"
+      variable = "${local.oidc_issuer}:sub"
+      values   = ["system:serviceaccount:kube-system:aws-node"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "${local.oidc_issuer}:aud"
+      values   = ["sts.amazonaws.com"]
+    }
+
+    principals {
+      identifiers = [aws_iam_openid_connect_provider.cluster.arn]
+      type        = "Federated"
+    }
+  }
+}
+
+resource "aws_iam_role" "aws_node" {
+  name = substr("eks-aws-node-${local.name2}", 0, 64)
+
+  assume_role_policy = data.aws_iam_policy_document.oidc.json
+
+  tags = {
+    "kubernetes.io/cluster/${var.cluster_name}": "owned",
+    "superhub.io/stack/${var.domain_name}": "owned",
+    "superhub.io/role/kind": "aws-node"
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "node-AmazonEKS_CNI_Policy" {
+  policy_arn = "arn:${local.partition}:iam::aws:policy/AmazonEKS_CNI_Policy"
+  role       = aws_iam_role.aws_node.name
+}
+
 locals {
   version           = var.k8s_version
   api_endpoint      = replace(aws_eks_cluster.main.endpoint, "/https://([^/]+).*/", "$1")

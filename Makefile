@@ -54,7 +54,7 @@ endif
 comma := ,
 WORKER_IMPL := $(if $(or $(findstring $(comma),$(TF_VAR_worker_instance_type)),$(TF_VAR_worker_spot_price)),autoscaling,nodegroup)
 
-deploy: init import plan apply iam gpu createsa storage token upgrade output
+deploy: init import plan apply awsnoderole iam gpu createsa storage token upgrade output
 
 init:
 	@mkdir -p $(TF_DATA_DIR)
@@ -81,6 +81,15 @@ apply:
 
 # 0.13upgrade: init
 #	$(terraform) 0.13upgrade -yes
+
+awsnoderole:
+	set -xe; arn=$$($(terraform) output -json | jq -r .aws_node_role_arn.value); \
+	if test "$$($(kubectl) -n kube-system get serviceaccount aws-node -o json | jq -r .metadata.annotations[\"eks.amazonaws.com/role-arn\"])" != "$$arn"; then \
+		$(kubectl) -n kube-system annotate serviceaccount --overwrite=true aws-node \
+			eks.amazonaws.com/role-arn=$$arn; \
+		$(kubectl) -n kube-system delete pod -l k8s-app=aws-node; \
+	fi
+.PHONY: awsnoderole
 
 iam:
     # Warning: kubectl apply should be used... below is ok
@@ -129,6 +138,7 @@ destroy: plan
 import: init import_route53
 	-$(terraform) import $(TF_CLI_ARGS) aws_iam_instance_profile.node eks-node-$(NAME2)
 	-$(terraform) import $(TF_CLI_ARGS) aws_iam_role.node             $$(echo eks-node-$(NAME2) | cut -c1-64)
+	-$(terraform) import $(TF_CLI_ARGS) aws_iam_role.aws_node         $$(echo eks-aws-node-$(NAME2) | cut -c1-64)
 	-$(terraform) import $(TF_CLI_ARGS) aws_iam_role.cluster          $$(echo eks-cluster-$(NAME2) | cut -c1-64)
 .PHONY: import
 

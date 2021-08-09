@@ -87,6 +87,10 @@ output "worker_instance_profile" {
   value = aws_iam_instance_profile.node.name
 }
 
-output "worker_role" {
+output "worker_role_name" {
   value = aws_iam_role.node.name
+}
+
+output "aws_node_role_arn" {
+  value = aws_iam_role.aws_node.arn
 }
