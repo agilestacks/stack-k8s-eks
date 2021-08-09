@@ -66,6 +66,12 @@ variable "worker_labels" {
   description = "Kubernetes worker node labels"
 }
 
+variable "worker_bootstrap" {
+  type        = string
+  default     = ""
+  description = "VM userdata to run commands prior to node Kubernetes bootstrap"
+}
+
 variable "worker_instance_type" {
   default = "r5.large"
   type    = string

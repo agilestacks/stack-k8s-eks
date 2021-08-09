@@ -14,6 +14,7 @@ data "aws_ami" "eks_worker" {
 locals {
   userdata = <<USERDATA
 #!/bin/sh
+${var.worker_bootstrap}
 exec /etc/eks/bootstrap.sh${length(var.worker_labels) > 0 ? " --kubelet-extra-args --node-labels=${var.worker_labels}" : ""} ${var.cluster_name}
 USERDATA
 

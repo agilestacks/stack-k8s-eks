@@ -16,6 +16,8 @@ resource "aws_eks_node_group" "nodes" {
   # TODO
   # capacity_type =
   labels         = {for label in split(",", var.worker_labels) : split("=", label)[0] => split("=", label)[1]}
+  # TODO pre-bootstrap userdata via aws_launch_template.user_data
+  # launch_template =
 
   remote_access {
     ec2_ssh_key = var.keypair

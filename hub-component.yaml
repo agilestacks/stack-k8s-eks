@@ -106,10 +106,6 @@ parameters:
       default: r5.large
   - name: worker
     parameters:
-    - name: aws.spotPrice
-      env: TF_VAR_worker_spot_price
-      value: ' '
-      empty: allow
     - name: volume.size
       env: TF_VAR_worker_root_volume_size
       value: 50
@@ -121,6 +117,12 @@ parameters:
       value: 100
     - name: labels
       env: TF_VAR_worker_labels
+      empty: allow
+    - name: bootstrap
+      env: TF_VAR_worker_bootstrap
+      empty: allow
+    - name: aws.spotPrice
+      env: TF_VAR_worker_spot_price
       empty: allow
   - name: worker.mixed
     parameters:
