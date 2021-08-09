@@ -28,10 +28,10 @@ resource "aws_iam_role_policy_attachment" "cluster-AmazonEKSClusterPolicy" {
 # TODO should this go away?
 # Prior to April 16, 2020, ManagedPolicyArns had an entry for arn:aws:iam::aws:policy/AmazonEKSServicePolicy.
 # With the AWSServiceRoleForAmazonEKS service-linked role, that policy is no longer required.
-resource "aws_iam_role_policy_attachment" "cluster-AmazonEKSServicePolicy" {
-  policy_arn = "arn:${local.partition}:iam::aws:policy/AmazonEKSServicePolicy"
-  role       = aws_iam_role.cluster.name
-}
+# resource "aws_iam_role_policy_attachment" "cluster-AmazonEKSServicePolicy" {
+#   policy_arn = "arn:${local.partition}:iam::aws:policy/AmazonEKSServicePolicy"
+#   role       = aws_iam_role.cluster.name
+# }
 
 # https://docs.aws.amazon.com/eks/latest/userguide/security-groups-for-pods.html
 resource "aws_iam_role_policy_attachment" "cluster-AmazonEKSVPCResourceController" {
@@ -62,7 +62,7 @@ resource "aws_eks_cluster" "main" {
 
   depends_on = [
     aws_iam_role_policy_attachment.cluster-AmazonEKSClusterPolicy,
-    aws_iam_role_policy_attachment.cluster-AmazonEKSServicePolicy,
+    # aws_iam_role_policy_attachment.cluster-AmazonEKSServicePolicy,
     aws_iam_role_policy_attachment.cluster-AmazonEKSVPCResourceController,
   ]
 
