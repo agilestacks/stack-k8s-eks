@@ -7,3 +7,4 @@ kubeconfig.*
 /eks-fargate.tf
 /*vpc.tf
 /*sg.tf
+/*zone.tf
