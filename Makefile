@@ -60,6 +60,7 @@ init:
 	@mkdir -p $(TF_DATA_DIR)
 	@cp -v fragments/eks-worker-$(WORKER_IMPL).tf eks-worker.tf
 	@rm -f existing-vpc.tf vpc.tf; if test -n "$(TF_VAR_vpc_id)"; then cp -v fragments/existing-vpc.tf .; else cp -v fragments/vpc.tf .; fi
+	@rm -f existing-zone.tf zone.tf; if test -n "$(TF_VAR_vpc_id)"; then cp -v fragments/existing-zone.tf .; else cp -v fragments/zone.tf .; fi
 	@rm -f existing-sg.tf sg.tf; if test -n "$(TF_VAR_worker_sg_id)"; then cp -v fragments/existing-sg.tf .; else cp -v fragments/sg.tf .; fi
 	@if test "$(FARGATE_ENABLED)" = true; then cp -v fragments/eks-fargate.tf .; else rm -f eks-fargate.tf; fi
 	@if test -n "$(TF_VAR_eks_admin)"; then cp -v fragments/aws-auth.tf .; else rm -f aws-auth.tf $(TF_DATA_DIR)/aws-auth.yaml; fi
@@ -135,11 +136,14 @@ undeploy: init import destroy apply
 destroy: TF_CLI_ARGS:=-destroy $(TF_CLI_ARGS)
 destroy: plan
 
-import: init import_route53
+import: init
 	-$(terraform) import $(TF_CLI_ARGS) aws_iam_instance_profile.node eks-node-$(NAME2)
 	-$(terraform) import $(TF_CLI_ARGS) aws_iam_role.node             $$(echo eks-node-$(NAME2) | cut -c1-64)
 	-$(terraform) import $(TF_CLI_ARGS) aws_iam_role.aws_node         $$(echo eks-aws-node-$(NAME2) | cut -c1-64)
 	-$(terraform) import $(TF_CLI_ARGS) aws_iam_role.cluster          $$(echo eks-cluster-$(NAME2) | cut -c1-64)
+ifeq (,$(TF_VAR_vpc_id))
+import: import_route53
+endif
 .PHONY: import
 
 import_route53: PARENT_ZID=$(shell AWS="$(aws)" JQ="$(jq)" bin/route53-zone-by-domain.sh $(BASE_DOMAIN))
