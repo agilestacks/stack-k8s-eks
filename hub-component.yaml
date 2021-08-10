@@ -91,7 +91,6 @@ parameters:
     - name: fargate.enabled
       value: false
       env: FARGATE_ENABLED
-
   - name: worker
     kind: user
     parameters:
