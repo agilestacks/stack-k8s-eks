@@ -1,5 +1,19 @@
 data "aws_iam_user" "admin" {
-  user_name = var.eks_admin
+  for_each = toset(split(",", var.eks_admin))
+  user_name = each.value
+}
+
+locals {
+  admins = [for admin in data.aws_iam_user.admin: admin.arn]
+  admins_yaml = <<EOT
+%{ for arn in local.admins }
+    - userarn: ${arn}
+      username: ${split("/", arn)[1]}
+      groups:
+        - system:masters
+%{ endfor }
+EOT
+
 }
 
 resource "local_file" "aws_auth" {
@@ -20,10 +34,7 @@ data:
         - system:bootstrappers
         - system:nodes
   mapUsers: |
-    - userarn: ${data.aws_iam_user.admin.arn}
-      username: admin
-      groups:
-        - system:masters
+${local.admins_yaml}
 CONFIGMAPAWSAUTH
 
 }
