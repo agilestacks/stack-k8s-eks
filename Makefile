@@ -54,7 +54,7 @@ endif
 comma := ,
 WORKER_IMPL := $(if $(or $(findstring $(comma),$(TF_VAR_worker_instance_type)),$(TF_VAR_worker_spot_price)),autoscaling,nodegroup)
 
-deploy: init import plan apply awsnoderole iam gpu createsa storage token upgrade output
+deploy: init import plan apply awsnoderole iam gpu createsa token upgrade output
 
 init:
 	@mkdir -p $(TF_DATA_DIR)
@@ -111,7 +111,7 @@ createsa:
 .PHONY: createsa
 
 storage:
-	$(kubectl) apply -f storage-class.yaml
+	$(kubectl) get sc default || $(kubectl) apply -f storage-class.yaml
 .PHONY: storage
 
 token:
