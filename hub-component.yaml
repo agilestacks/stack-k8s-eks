@@ -7,7 +7,7 @@ meta:
   brief: Managed Kubernetes Service
   description: >
     Amazon Elastic Kubernetes Service is a fully managed Kubernetes service. Amazon customers such as Intel, Snap, Intuit, GoDaddy, and Autodesk trust EKS to run their most sensitive and mission critical applications because of its security, reliability, and scalability.
-  version: 1.20
+  version: 1.21
   source:
     dir: ../stack-k8s-eks/
 
@@ -66,7 +66,7 @@ parameters:
     env: EXTERNAL_AWS_SECRET_KEY
 
 - name: component.kubernetes.version
-  value: "1.20"
+  value: "1.21"
   env: K8S_VERSION
 
 - name: component.kubernetes
