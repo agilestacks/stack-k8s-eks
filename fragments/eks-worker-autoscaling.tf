@@ -91,7 +91,12 @@ resource "aws_launch_template" "node" {
 resource "aws_autoscaling_group" "nodes" {
   name = "eks-node-${local.name2}"
 
-  depends_on = [aws_eks_cluster.main]
+  depends_on = [
+    aws_eks_cluster.main,
+    aws_iam_role_policy_attachment.node-AmazonEKSWorkerNodePolicy,
+    aws_iam_role_policy_attachment.node-AmazonEC2ContainerRegistryReadOnly,
+    aws_iam_role_policy_attachment.node-AmazonEKS_CNI_Policy,
+  ]
 
   vpc_zone_identifier = local.subnet_ids
   desired_capacity    = var.worker_count

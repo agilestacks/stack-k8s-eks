@@ -42,6 +42,7 @@ resource "aws_iam_instance_profile" "node" {
   depends_on = [
     aws_iam_role_policy_attachment.node-AmazonEKSWorkerNodePolicy,
     aws_iam_role_policy_attachment.node-AmazonEC2ContainerRegistryReadOnly,
+    aws_iam_role_policy_attachment.node-AmazonEKS_CNI_Policy,
   ]
 }
 

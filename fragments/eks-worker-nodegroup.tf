@@ -30,5 +30,11 @@ resource "aws_eks_node_group" "nodes" {
   depends_on = [
     aws_iam_role_policy_attachment.node-AmazonEKSWorkerNodePolicy,
     aws_iam_role_policy_attachment.node-AmazonEC2ContainerRegistryReadOnly,
+    aws_iam_role_policy_attachment.nodegroup-AmazonEKS_CNI_Policy,
   ]
+}
+
+resource "aws_iam_role_policy_attachment" "nodegroup-AmazonEKS_CNI_Policy" {
+  policy_arn = "arn:${local.partition}:iam::aws:policy/AmazonEKS_CNI_Policy"
+  role       = aws_iam_role.node.name
 }
