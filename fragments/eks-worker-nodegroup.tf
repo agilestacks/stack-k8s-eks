@@ -15,7 +15,7 @@ resource "aws_eks_node_group" "nodes" {
   instance_types = [var.worker_instance_type]
   # TODO
   # capacity_type =
-  labels         = {for label in split(",", var.worker_labels) : split("=", label)[0] => split("=", label)[1]}
+  labels         = {for label in compact(split(",", var.worker_labels)) : split("=", label)[0] => split("=", label)[1]}
   # TODO pre-bootstrap userdata via aws_launch_template.user_data
   # launch_template =
 
