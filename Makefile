@@ -64,7 +64,7 @@ init:
 	@rm -f existing-sg.tf sg.tf; if test -n "$(TF_VAR_worker_sg_id)"; then cp -v fragments/existing-sg.tf .; else cp -v fragments/sg.tf .; fi
 	@if test "$(FARGATE_ENABLED)" = true; then cp -v fragments/eks-fargate.tf .; else rm -f eks-fargate.tf; fi
 	@if test -n "$(TF_VAR_eks_admin)"; then cp -v fragments/aws-auth.tf .; else rm -f aws-auth.tf $(TF_DATA_DIR)/aws-auth.yaml; fi
-	$(terraform) init -get=true $(TF_CLI_ARGS) -reconfigure -force-copy  \
+	$(terraform) init -upgrade -get=true $(TF_CLI_ARGS) -reconfigure -force-copy  \
 		-backend-config="bucket=$(STATE_BUCKET)" \
 		-backend-config="region=$(STATE_REGION)" \
 		-backend-config="key=$(DOMAIN_NAME)/stack-k8s-eks/$(COMPONENT_NAME)/terraform.tfstate" \
