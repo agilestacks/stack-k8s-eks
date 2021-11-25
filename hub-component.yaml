@@ -50,15 +50,20 @@ parameters:
     env: TF_VAR_availability_zone
   - name: availabilityZones
     env: TF_VAR_availability_zones
-  # deploy into existing VPC
-  - name: vpc.id
-    env: TF_VAR_vpc_id
-  # explicit subnets, else all subnets
-  - name: vpc.worker.subnet.ids
-    env: TF_VAR_worker_subnet_ids
-  # explicit security group, else it will be created
-  - name: vpc.worker.sg.id
-    env: TF_VAR_worker_sg_id
+  - name: vpc
+    parameters:
+    - name: cidr
+      value: 10.0.0.0/16
+      env: TF_VAR_cidr_block
+    # deploy into existing VPC
+    - name: id
+      env: TF_VAR_vpc_id
+    # explicit subnets, else all subnets
+    - name: worker.subnet.ids
+      env: TF_VAR_worker_subnet_ids
+    # explicit security group, else it will be created
+    - name: worker.sg.id
+      env: TF_VAR_worker_sg_id
   # GovCloud cluster bind Route53 zone in public cloud
   - name: aws.accessKey
     env: EXTERNAL_AWS_ACCESS_KEY
